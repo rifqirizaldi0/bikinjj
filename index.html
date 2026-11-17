@@ -1,885 +1,535 @@
 <!DOCTYPE html>
-<html lang="id" class="dark">
+<html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JJ CapCut Generator — Auto Video Editor</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts: Inter -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    },
-                    colors: {
-                        brand: {
-                            50: '#f5f3ff',
-                            100: '#ede9fe',
-                            200: '#ddd6fe',
-                            300: '#c4b5fd',
-                            400: '#a78bfa',
-                            500: '#8b5cf6',
-                            600: '#7c3aed',
-                            700: '#6d28d9',
-                            800: '#5b21b6',
-                            900: '#4c1d95',
-                        }
-                    },
-                    animation: {
-                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-                    }
-                }
-            }
-        }
-    </script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>JJ CapCut Generator</title>
+<meta name="theme-color" content="#14152b">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,700;12..96,800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#e8eaf3; --surface:#fff; --ink:#14152b; --muted:#5d6080; --line:#d3d6e6;
+  --blue:#3a36f0; --blue-d:#2824c4; --flash:#ffd83d; --ok:#0f8a5f; --bad:#c9304a;
+  --f:'Bricolage Grotesque',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+*{box-sizing:border-box;margin:0}
+html{color-scheme:light}
+body{font-family:var(--f);background:var(--bg);color:var(--ink);min-height:100vh;line-height:1.5;-webkit-font-smoothing:antialiased}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none}
+:focus-visible{outline:3px solid var(--blue);outline-offset:2px;border-radius:6px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+svg{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+
+/* header */
+header{background:var(--ink);color:#fff}
+header .wrap{display:flex;align-items:center;justify-content:space-between;height:64px;gap:12px}
+.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.brand img{height:34px;width:auto;display:block}
+.brand b{font-weight:800;font-size:1.15rem;letter-spacing:-.02em;white-space:nowrap}
+.ghost{display:inline-flex;align-items:center;gap:8px;padding:9px 14px;border-radius:10px;border:1px solid #ffffff33;font-size:.875rem;font-weight:500;transition:background .15s}
+.ghost:hover{background:#ffffff1a}
+
+/* intro */
+.intro{padding:36px 0 22px}
+.intro h1{font-size:clamp(1.9rem,5.5vw,3.4rem);font-weight:800;line-height:1.02;letter-spacing:-.035em;max-width:16ch}
+.intro p{color:var(--muted);margin-top:12px;max-width:52ch}
+
+.grid{display:grid;gap:20px;grid-template-columns:1fr;padding-bottom:120px;align-items:start}
+@media(min-width:900px){.grid{grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);padding-bottom:56px}}
+.card{background:var(--surface);border-radius:20px;padding:22px;border:1px solid var(--line)}
+.card h2{font-size:1.1rem;font-weight:700;letter-spacing:-.01em}
+.sub{font-size:.85rem;color:var(--muted)}
+.row{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+.count{font-weight:700;font-size:.9rem;background:var(--bg);padding:3px 10px;border-radius:99px}
+
+/* filmstrip */
+.strip{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:10px}
+.frame{position:relative;aspect-ratio:9/16;border-radius:10px;overflow:hidden;background:var(--ink);cursor:grab}
+.frame.drag{opacity:.4}
+.frame.over{outline:3px solid var(--flash)}
+.frame img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
+.frame .n{position:absolute;left:6px;top:6px;background:var(--flash);color:var(--ink);font-weight:800;font-size:.75rem;min-width:22px;height:22px;display:grid;place-items:center;border-radius:6px}
+.frame .tools{position:absolute;inset:auto 0 0 0;display:flex;justify-content:space-between;padding:6px;background:linear-gradient(transparent,#000a)}
+.frame .tools button{width:28px;height:28px;border-radius:8px;background:#ffffffe6;color:var(--ink);display:grid;place-items:center;font-size:.9rem}
+.frame .tools button.x{background:var(--bad);color:#fff}
+.frame .tools button:disabled{opacity:.35;cursor:default}
+.add{aspect-ratio:9/16;border-radius:10px;border:2px dashed #9aa0c8;display:grid;place-items:center;text-align:center;padding:8px;color:var(--blue);font-weight:700;font-size:.85rem;transition:background .15s,border-color .15s}
+.add:hover,.add.hot{background:#3a36f014;border-color:var(--blue)}
+.add svg{font-size:1.6rem;display:block;margin:0 auto 6px}
+.drop-empty{display:block;width:100%;border:2px dashed #9aa0c8;border-radius:16px;padding:44px 20px;text-align:center;transition:background .15s,border-color .15s}
+.drop-empty:hover,.drop-empty.hot{background:#3a36f014;border-color:var(--blue)}
+.drop-empty svg{font-size:2rem;color:var(--blue)}
+.drop-empty strong{display:block;font-size:1.15rem;margin-top:8px}
+.hint{font-size:.8rem;color:var(--muted);margin-top:12px}
+
+details{margin-top:20px;border-top:1px solid var(--line);padding-top:16px}
+summary{font-weight:600;cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between}
+summary::-webkit-details-marker{display:none}
+summary svg{transition:transform .2s}
+details[open] summary svg{transform:rotate(180deg)}
+.field{display:flex;gap:8px;margin-top:12px}
+.field input{flex:1;min-width:0;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;background:#fff;font-family:ui-monospace,Menlo,monospace;font-size:.9rem}
+.field input:focus{border-color:var(--blue);outline:0;box-shadow:0 0 0 3px #3a36f033}
+.link{color:var(--blue);font-weight:600;font-size:.85rem;padding:0 4px}
+.link:hover{text-decoration:underline}
+
+/* dock */
+.dock{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--ink);color:#fff;padding:12px 20px calc(12px + env(safe-area-inset-bottom));display:flex;align-items:center;gap:14px;justify-content:space-between}
+.dock .info{font-size:.85rem;line-height:1.3;min-width:0}
+.dock .info b{display:block;font-size:1rem}
+.go{display:inline-flex;align-items:center;gap:10px;background:var(--flash);color:var(--ink);font-weight:800;font-size:1rem;padding:13px 22px;border-radius:14px;transition:transform .1s,background .15s;white-space:nowrap}
+.go:hover:not(:disabled){background:#ffe36e}
+.go:active:not(:disabled){transform:scale(.97)}
+.go:disabled{opacity:.45;cursor:not-allowed}
+@media(min-width:900px){
+  .dock{position:static;background:none;color:var(--ink);padding:18px 0 0}
+  .dock .info{color:var(--muted)}
+  .dock .info b{color:var(--ink)}
+  .go{background:var(--blue);color:#fff;padding:14px 26px}
+  .go:hover:not(:disabled){background:var(--blue-d)}
+}
+
+/* result */
+.side{display:grid;gap:20px}
+@media(min-width:900px){.stage-card{position:sticky;top:20px}}
+.phone{position:relative;width:min(100%,260px);margin:0 auto;aspect-ratio:9/16;border-radius:26px;overflow:hidden;background:var(--ink);border:6px solid var(--ink);box-shadow:0 0 0 1px var(--line)}
+.phone>*{position:absolute;inset:0;width:100%;height:100%}
+.phone video,.phone img{object-fit:cover}
+.msg{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#c9ccea;padding:22px;gap:8px;font-size:.9rem}
+.msg svg{font-size:2rem;color:var(--flash)}
+.msg b{color:#fff;font-size:1rem}
+.flash{background:#fff;opacity:0;pointer-events:none}
+.flash.on{animation:fl .16s ease-out}
+@keyframes fl{from{opacity:.75}to{opacity:0}}
+.timer{position:absolute;left:10px;bottom:10px;top:auto;inset:auto;width:auto;height:auto;background:#000a;color:#fff;font-variant-numeric:tabular-nums;font-size:.8rem;font-weight:700;padding:3px 9px;border-radius:99px}
+[hidden]{display:none!important}
+.meta{margin-top:18px;display:grid;gap:8px;font-size:.88rem}
+.meta div{display:flex;justify-content:space-between;gap:12px}
+.meta span:first-child{color:var(--muted)}
+.meta a{color:var(--blue);font-weight:600;word-break:break-all;text-align:right}
+.status{display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:.95rem;margin-top:18px}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--flash);box-shadow:0 0 0 0 #ffd83d99;animation:pu 1.2s infinite}
+.status.ok .dot{background:var(--ok);animation:none}
+.status.bad .dot{background:var(--bad);animation:none}
+@keyframes pu{70%{box-shadow:0 0 0 9px #ffd83d00}100%{box-shadow:0 0 0 0 #ffd83d00}}
+.btns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;border-radius:12px;font-weight:700;font-size:.9rem;border:1.5px solid var(--line);background:#fff;transition:background .15s}
+.btn:hover{background:var(--bg)}
+.btn.main{background:var(--blue);border-color:var(--blue);color:#fff}
+.btn.main:hover{background:var(--blue-d)}
+.note{font-size:.8rem;color:var(--muted);margin-top:12px}
+.errtext{color:var(--bad);font-size:.9rem;margin-top:8px}
+.raw{margin-top:16px;font-size:.8rem}
+.raw pre{margin-top:8px;padding:12px;background:var(--ink);color:#b9f5d8;border-radius:12px;overflow:auto;max-height:200px;font-size:.75rem}
+
+/* history */
+.hist{display:grid;gap:8px;margin-top:4px}
+.hi{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;text-align:left;padding:11px 14px;border-radius:12px;border:1px solid var(--line);transition:border-color .15s,background .15s}
+.hi:hover{border-color:var(--blue);background:#3a36f00a}
+.hi b{display:block;font-family:ui-monospace,Menlo,monospace;font-size:.82rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hi small{color:var(--muted);font-size:.78rem}
+.tag{font-size:.75rem;font-weight:700;padding:3px 9px;border-radius:99px;white-space:nowrap;background:#ffd83d55}
+.tag.completed{background:#0f8a5f22;color:var(--ok)}
+.tag.failed,.tag.expired{background:#c9304a1f;color:var(--bad)}
+
+/* dialog + toast */
+dialog{border:0;border-radius:20px;padding:24px;width:min(92vw,420px);box-shadow:0 20px 60px #14152b55;background:#fff;color:var(--ink)}
+dialog::backdrop{background:#14152bb3}
+dialog h3{font-size:1.15rem;margin-bottom:6px}
+dialog input{width:100%;margin:14px 0;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;font-family:ui-monospace,Menlo,monospace}
+dialog input:focus{border-color:var(--blue);outline:0;box-shadow:0 0 0 3px #3a36f033}
+.acts{display:flex;justify-content:flex-end;gap:8px}
+#toasts{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:60;display:grid;gap:8px;width:min(92vw,380px);pointer-events:none}
+.toast{background:var(--ink);color:#fff;padding:12px 16px;border-radius:12px;font-size:.88rem;font-weight:500;border-left:5px solid var(--flash);box-shadow:0 10px 30px #14152b44;animation:ti .2s ease-out}
+.toast.error{border-color:var(--bad)}.toast.success{border-color:#3ddc97}
+@keyframes ti{from{opacity:0;transform:translateY(-8px)}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
 </head>
-<body class="bg-slate-950 text-slate-100 font-sans min-h-screen flex flex-col antialiased selection:bg-brand-500 selection:text-white">
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="i-up" viewBox="0 0 24 24"><path d="M12 16V4m0 0L7 9m5-5 5 5M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></symbol>
+<symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+<symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+<symbol id="i-l" viewBox="0 0 24 24"><path d="m15 6-6 6 6 6"/></symbol>
+<symbol id="i-r" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></symbol>
+<symbol id="i-dl" viewBox="0 0 24 24"><path d="M12 4v11m0 0-5-5m5 5 5-5M4 20h16"/></symbol>
+<symbol id="i-link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></symbol>
+<symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></symbol>
+<symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 3 5 14h6l-1 7 8-11h-6z"/></symbol>
+<symbol id="i-film" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M8 4v16M16 4v16M3 9h5M3 15h5M16 9h5M16 15h5"/></symbol>
+<symbol id="i-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+<symbol id="i-warn" viewBox="0 0 24 24"><path d="M12 8v5m0 4h.01M10.3 3.9 2.4 18a2 2 0 0 0 1.7 3h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></symbol>
+</defs></svg>
 
-    <!-- Toast / Notification Container (Menggantikan alert()) -->
-    <div id="toast-container" class="fixed top-4 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none px-4 sm:px-0"></div>
+<div id="toasts" role="status" aria-live="polite"></div>
 
-    <!-- Header / Navbar -->
-    <header class="sticky top-0 z-40 bg-slate-950/80 backdrop-blur-md border-b border-slate-800/80">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-pink-500 flex items-center justify-center shadow-lg shadow-brand-500/20">
-                    <i class="fa-solid fa-wand-magic-sparkles text-white text-lg"></i>
-                </div>
-                <div>
-                    <h1 class="font-bold text-lg tracking-tight bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">
-                        JJ CapCut Studio
-                    </h1>
-                    <p class="text-[11px] text-slate-400 font-medium">Auto Jedag-Jedug Template Renderer</p>
-                </div>
-            </div>
+<header>
+  <div class="wrap">
+    <div class="brand">
+      <img src="logo.png" alt="" onerror="this.remove()">
+      <b>JJ CapCut Generator</b>
+    </div>
+    <button class="ghost" onclick="openCheck()"><svg><use href="#i-search"/></svg>Cek Job ID</button>
+  </div>
+</header>
 
-            <div class="flex items-center gap-2">
-                <button onclick="openCheckModal()" class="text-xs sm:text-sm bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-700/80 px-3.5 py-2 rounded-xl transition flex items-center gap-2 font-medium">
-                    <i class="fa-solid fa-magnifying-glass text-brand-400"></i>
-                    <span>Cek Job ID</span>
-                </button>
-            </div>
+<main class="wrap">
+  <section class="intro">
+    <h1>Foto jadi video jedag-jedug.</h1>
+    <p>Pilih foto, atur urutannya, lalu generate. Setiap foto mengisi satu slot template dan berganti mengikuti beat.</p>
+  </section>
+
+  <div class="grid">
+    <!-- KIRI -->
+    <div>
+      <section class="card">
+        <div class="row">
+          <div>
+            <h2>Foto kamu</h2>
+            <p class="sub">JPG, PNG, atau WebP. Urutan di sini = urutan di video.</p>
+          </div>
+          <span class="count" id="count">0 foto</span>
         </div>
-    </header>
 
-    <!-- Main Content -->
-    <main class="flex-grow max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            
-            <!-- Kolom Kiri: Form Upload & Konfigurasi (7 Kolom) -->
-            <div class="lg:col-span-7 space-y-6">
-                <div class="bg-slate-900/70 border border-slate-800 rounded-2xl p-5 sm:p-6 shadow-xl">
-                    <div class="flex items-center justify-between mb-4">
-                        <div>
-                            <h2 class="text-base sm:text-lg font-semibold text-white flex items-center gap-2">
-                                <span class="w-6 h-6 rounded-full bg-brand-500/20 text-brand-400 text-xs flex items-center justify-center font-bold">1</span>
-                                Unggah Foto Bahan
-                            </h2>
-                            <p class="text-xs text-slate-400 mt-0.5">Format JPG/PNG. Jumlah foto menyesuaikan slot template.</p>
-                        </div>
-                        <span id="photo-counter-badge" class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-slate-800 text-slate-300 border border-slate-700">
-                            0 Foto Dipilih
-                        </span>
-                    </div>
+        <input type="file" id="file" accept="image/jpeg,image/png,image/webp" multiple hidden>
 
-                    <!-- Dropzone Area -->
-                    <div id="dropzone" class="relative border-2 border-dashed border-slate-700 hover:border-brand-500 bg-slate-950/50 hover:bg-brand-500/5 rounded-2xl p-6 sm:p-8 text-center transition-all cursor-pointer group">
-                        <input type="file" id="file-input" accept="image/jpeg,image/png,image/webp" multiple class="hidden">
-                        <div class="w-14 h-14 mx-auto rounded-2xl bg-slate-900 border border-slate-800 group-hover:border-brand-500/50 group-hover:scale-105 transition-transform flex items-center justify-center mb-3 shadow-inner">
-                            <i class="fa-solid fa-cloud-arrow-up text-2xl text-brand-400"></i>
-                        </div>
-                        <p class="text-sm font-medium text-slate-200">
-                            Klik untuk memilih foto atau <span class="text-brand-400 underline">seret ke sini</span>
-                        </p>
-                        <p class="text-xs text-slate-500 mt-1">
-                            Mendukung banyak foto sekaligus (Field <code class="text-slate-400">photos</code>)
-                        </p>
-                    </div>
+        <button type="button" class="drop-empty" id="empty" onclick="file.click()">
+          <svg><use href="#i-up"/></svg>
+          <strong>Pilih foto</strong>
+          <span class="sub">atau seret dan lepas di sini</span>
+        </button>
 
-                    <!-- Grid Pratinjau Foto -->
-                    <div id="preview-wrapper" class="hidden mt-5">
-                        <div class="flex items-center justify-between mb-2.5">
-                            <span class="text-xs font-medium text-slate-400">Urutan Foto (Akan dikirim berurutan)</span>
-                            <button type="button" onclick="clearAllPhotos()" class="text-xs text-rose-400 hover:text-rose-300 font-medium flex items-center gap-1 transition">
-                                <i class="fa-solid fa-trash-can"></i> Hapus Semua
-                            </button>
-                        </div>
-                        <div id="photo-grid" class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3"></div>
-                    </div>
+        <div class="strip" id="strip" hidden></div>
+        <p class="hint" id="strip-hint" hidden>Seret foto atau pakai tombol panah untuk mengubah urutan.</p>
 
-                    <!-- Divider -->
-                    <div class="my-6 border-t border-slate-800/80"></div>
+        <details>
+          <summary>Pakai template tertentu <svg><use href="#i-down"/></svg></summary>
+          <div class="field">
+            <input type="text" id="tpl" inputmode="numeric" placeholder="Template ID" aria-label="Template ID" autocomplete="off">
+            <button type="button" class="link" onclick="sampleTpl()">Isi contoh</button>
+          </div>
+          <p class="hint">Jumlah foto harus sama dengan jumlah slot template. Kosongkan untuk template acak yang cocok dengan jumlah fotomu.</p>
+        </details>
+      </section>
 
-                    <!-- Opsi Template ID -->
-                    <div>
-                        <div class="flex items-center justify-between mb-2">
-                            <label for="template-id" class="text-sm font-semibold text-white flex items-center gap-2">
-                                <span class="w-6 h-6 rounded-full bg-brand-500/20 text-brand-400 text-xs flex items-center justify-center font-bold">2</span>
-                                Template ID <span class="text-xs font-normal text-slate-400">(Opsional)</span>
-                            </label>
-                            <button type="button" onclick="fillSampleTemplate()" class="text-[11px] text-brand-400 hover:text-brand-300 font-medium transition">
-                                Gunakan Contoh ID
-                            </button>
-                        </div>
-                        <div class="relative">
-                            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
-                                <i class="fa-solid fa-hashtag text-sm"></i>
-                            </div>
-                            <input type="text" id="template-id" placeholder="Kosongkan untuk memilih template acak sesuai jumlah foto..."
-                                class="w-full bg-slate-950 border border-slate-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 rounded-xl pl-10 pr-10 py-3 text-sm text-slate-100 placeholder-slate-500 outline-none transition">
-                            <button type="button" id="clear-template-btn" onclick="clearTemplateId()" class="hidden absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-500 hover:text-slate-300">
-                                <i class="fa-solid fa-circle-xmark"></i>
-                            </button>
-                        </div>
-                        <p class="text-[11px] text-slate-400 mt-2 leading-relaxed">
-                            <i class="fa-solid fa-circle-info text-brand-400 mr-1"></i>
-                            Jika diisi, jumlah foto <strong>harus sama persis</strong> dengan jumlah slot template tersebut. Jika dikosongkan, sistem memilih template secara acak yang cocok dengan jumlah fotomu.
-                        </p>
-                    </div>
-
-                    <!-- Submit Button -->
-                    <div class="mt-6">
-                        <button type="button" id="generate-btn" onclick="submitJob()" class="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-brand-600 via-purple-600 to-pink-600 hover:from-brand-500 hover:to-pink-500 text-white font-semibold text-sm sm:text-base shadow-lg shadow-brand-600/25 active:scale-[0.99] transition-all flex items-center justify-center gap-2.5 disabled:opacity-50 disabled:cursor-not-allowed">
-                            <i class="fa-solid fa-bolt"></i>
-                            <span id="generate-btn-text">Generate Video JJ Sekarang</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Kolom Kanan: Status Render, Hasil & Riwayat (5 Kolom) -->
-            <div class="lg:col-span-5 space-y-6">
-                
-                <!-- Panel Status / Hasil Render Aktif -->
-                <div class="bg-slate-900/70 border border-slate-800 rounded-2xl p-5 sm:p-6 shadow-xl">
-                    <div class="flex items-center justify-between mb-4">
-                        <h2 class="text-base sm:text-lg font-semibold text-white flex items-center gap-2">
-                            <i class="fa-solid fa-film text-brand-400"></i>
-                            Status & Hasil Render
-                        </h2>
-                        <span id="polling-indicator" class="hidden items-center gap-1.5 text-[11px] font-medium px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20">
-                            <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping"></span>
-                            Auto-cek aktif
-                        </span>
-                    </div>
-
-                    <!-- State 1: Empty / Belum ada job -->
-                    <div id="state-empty" class="py-10 px-4 text-center border border-dashed border-slate-800 rounded-xl bg-slate-950/40">
-                        <div class="w-12 h-12 rounded-full bg-slate-900 mx-auto flex items-center justify-center text-slate-600 mb-3">
-                            <i class="fa-solid fa-clapperboard text-xl"></i>
-                        </div>
-                        <p class="text-sm font-medium text-slate-300">Belum ada proses render aktif</p>
-                        <p class="text-xs text-slate-500 mt-1 max-w-xs mx-auto">
-                            Unggah foto di sebelah kiri dan klik tombol Generate untuk memulai pembuatan video.
-                        </p>
-                    </div>
-
-                    <!-- State 2: Processing / Rendering -->
-                    <div id="state-processing" class="hidden space-y-4">
-                        <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 relative overflow-hidden">
-                            <!-- Progress bar animasi -->
-                            <div class="absolute top-0 left-0 right-0 h-1 bg-slate-800 overflow-hidden">
-                                <div class="h-full bg-gradient-to-r from-brand-500 via-pink-500 to-brand-500 w-full animate-pulse"></div>
-                            </div>
-
-                            <div class="flex items-start justify-between gap-3 pt-1">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 rounded-xl bg-brand-500/10 border border-brand-500/30 flex items-center justify-center text-brand-400 shrink-0">
-                                        <i class="fa-solid fa-spinner fa-spin text-lg"></i>
-                                    </div>
-                                    <div>
-                                        <div class="flex items-center gap-2">
-                                            <span class="text-xs font-bold uppercase tracking-wider text-amber-400">Sedang Memproses</span>
-                                        </div>
-                                        <p id="proc-job-id" class="text-sm font-mono font-semibold text-white mt-0.5">jj_...</p>
-                                    </div>
-                                </div>
-                                <button onclick="copyText(currentJobId)" title="Salin Job ID" class="p-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white border border-slate-800 transition">
-                                    <i class="fa-regular fa-copy text-xs"></i>
-                                </button>
-                            </div>
-
-                            <!-- Info Template yang Dipilih Server -->
-                            <div id="proc-template-box" class="mt-4 pt-3 border-t border-slate-800/80 text-xs space-y-1.5">
-                                <div class="flex justify-between">
-                                    <span class="text-slate-400">Template:</span>
-                                    <span id="proc-tpl-title" class="text-slate-200 font-medium text-right">-</span>
-                                </div>
-                                <div class="flex justify-between">
-                                    <span class="text-slate-400">Template ID:</span>
-                                    <a id="proc-tpl-link" href="#" target="_blank" rel="noopener noreferrer" class="text-brand-400 hover:underline font-mono flex items-center gap-1">
-                                        <span id="proc-tpl-id">-</span>
-                                        <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
-                                    </a>
-                                </div>
-                                <div class="flex justify-between">
-                                    <span class="text-slate-400">Jumlah Foto / Slot:</span>
-                                    <span id="proc-slots" class="text-slate-200 font-medium">-</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="flex items-center justify-between gap-2">
-                            <p class="text-[11px] text-slate-400">
-                                <i class="fa-regular fa-clock mr-1"></i> Mengecek otomatis setiap 4 detik...
-                            </p>
-                            <button onclick="manualCheckCurrentJob()" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-lg transition font-medium">
-                                <i class="fa-solid fa-rotate mr-1"></i> Cek Sekarang
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- State 3: Completed / Video Ready -->
-                    <div id="state-completed" class="hidden space-y-4">
-                        <div class="rounded-xl overflow-hidden bg-black border border-slate-800 relative group">
-                            <video id="result-video" controls playsinline class="w-full max-h-[380px] object-contain mx-auto bg-slate-950"></video>
-                        </div>
-
-                        <div class="p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-between gap-3">
-                            <div class="flex items-center gap-2.5">
-                                <i class="fa-solid fa-circle-check text-emerald-400 text-lg"></i>
-                                <div>
-                                    <p class="text-xs font-semibold text-emerald-300">Video Berhasil Dirender!</p>
-                                    <p id="done-job-id" class="text-[11px] font-mono text-emerald-400/80">jj_...</p>
-                                </div>
-                            </div>
-                            <span id="done-template-badge" class="text-[11px] px-2 py-0.5 rounded bg-slate-900/80 text-slate-300 border border-slate-700 font-mono">
-                                #template
-                            </span>
-                        </div>
-
-                        <div class="grid grid-cols-2 gap-2.5">
-                            <a id="download-video-btn" href="#" target="_blank" download="jj-capcut-result.mp4" class="py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs sm:text-sm font-semibold text-center transition flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/20">
-                                <i class="fa-solid fa-download"></i>
-                                <span>Unduh Video</span>
-                            </a>
-                            <button id="copy-video-url-btn" onclick="copyResultUrl()" class="py-2.5 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs sm:text-sm font-medium transition flex items-center justify-center gap-2 border border-slate-700">
-                                <i class="fa-solid fa-link"></i>
-                                <span>Salin Tautan</span>
-                            </button>
-                        </div>
-
-                        <p class="text-[11px] text-amber-400/90 bg-amber-500/5 border border-amber-500/10 rounded-lg p-2.5">
-                            <i class="fa-solid fa-triangle-exclamation mr-1"></i>
-                            Catatan: Tautan hasil bertoken dan memiliki masa berlaku terbatas. Segera unduh video Anda.
-                        </p>
-                    </div>
-
-                    <!-- State 4: Error / Expired -->
-                    <div id="state-error" class="hidden space-y-3">
-                        <div class="p-4 rounded-xl bg-rose-500/10 border border-rose-500/25 text-rose-200">
-                            <div class="flex items-start gap-3">
-                                <i class="fa-solid fa-circle-exclamation text-rose-400 text-lg mt-0.5"></i>
-                                <div>
-                                    <h3 class="text-sm font-semibold text-rose-300">Proses Gagal / Kedaluwarsa</h3>
-                                    <p id="error-message-text" class="text-xs text-rose-200/80 mt-1 leading-relaxed">
-                                        Terjadi kesalahan saat memproses permintaan.
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                        <button onclick="resetToEmptyState()" class="w-full py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-300 transition">
-                            Tutup Pesan Error
-                        </button>
-                    </div>
-
-                    <!-- Raw JSON Response Accordion -->
-                    <div id="raw-json-wrapper" class="hidden mt-5 pt-4 border-t border-slate-800/80">
-                        <button type="button" onclick="toggleRawJson()" class="w-full flex items-center justify-between text-xs text-slate-400 hover:text-slate-200 transition">
-                            <span class="flex items-center gap-1.5 font-medium">
-                                <i class="fa-solid fa-code text-brand-400"></i> Lihat Respons JSON API
-                            </span>
-                            <i id="raw-json-chevron" class="fa-solid fa-chevron-down text-[10px] transition-transform"></i>
-                        </button>
-                        <pre id="raw-json-content" class="hidden mt-2.5 p-3 rounded-xl bg-slate-950 border border-slate-800 text-[11px] font-mono text-emerald-400 overflow-x-auto max-h-56"></pre>
-                    </div>
-                </div>
-
-                <!-- Riwayat Job Lokal (LocalStorage) -->
-                <div class="bg-slate-900/70 border border-slate-800 rounded-2xl p-5 shadow-xl">
-                    <div class="flex items-center justify-between mb-3">
-                        <h3 class="text-sm font-semibold text-white flex items-center gap-2">
-                            <i class="fa-solid fa-clock-rotate-left text-slate-400"></i>
-                            Riwayat Job Terakhir
-                        </h3>
-                        <button onclick="clearHistory()" class="text-[11px] text-slate-500 hover:text-rose-400 transition">
-                            Bersihkan
-                        </button>
-                    </div>
-                    <div id="history-list" class="space-y-2 max-h-60 overflow-y-auto pr-1">
-                        <!-- Diisi oleh JS -->
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </main>
-
-    <!-- Footer -->
-    <footer class="border-t border-slate-800/80 py-5 mt-8">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-500">
-            <p>JJ CapCut Generator Web Client</p>
-            <p class="font-mono text-[11px] text-slate-600">Endpoint: /api/downloader/jj</p>
-        </div>
-    </footer>
-
-    <!-- Modal Cek Status Job Manual -->
-    <div id="check-modal" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl">
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="text-base font-bold text-white flex items-center gap-2">
-                    <i class="fa-solid fa-magnifying-glass text-brand-400"></i>
-                    Cek Status Job ID
-                </h3>
-                <button onclick="closeCheckModal()" class="text-slate-400 hover:text-white p-1">
-                    <i class="fa-solid fa-xmark text-lg"></i>
-                </button>
-            </div>
-            <p class="text-xs text-slate-400 mb-3">
-                Masukkan <code class="text-slate-300">job_id</code> (contoh: <code class="text-brand-400">jj_b293ca008459f30e</code>) untuk memeriksa status render atau mengambil ulang hasil video.
-            </p>
-            <input type="text" id="manual-job-input" placeholder="jj_xxxxxxxxxxxxxxxx"
-                class="w-full bg-slate-950 border border-slate-800 focus:border-brand-500 rounded-xl px-4 py-3 text-sm font-mono text-white placeholder-slate-600 outline-none mb-4">
-            <div class="flex justify-end gap-2">
-                <button onclick="closeCheckModal()" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-300 transition">
-                    Batal
-                </button>
-                <button onclick="submitManualJobCheck()" class="px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-500 text-xs font-semibold text-white transition">
-                    Periksa Status
-                </button>
-            </div>
-        </div>
+      <div class="dock">
+        <div class="info"><b id="dock-title">Belum ada foto</b><span id="dock-sub">Tambahkan minimal 1 foto</span></div>
+        <button class="go" id="go" onclick="submitJob()" disabled><svg><use href="#i-bolt"/></svg><span id="go-t">Generate video</span></button>
+      </div>
     </div>
 
-    <script>
-        // Konfigurasi Endpoint API
-        const API_BASE_URL = 'https://na-api-nue-api-e7bfd3f4.koyeb.app/api/downloader/jj';
-
-        // State Aplikasi
-        let selectedFiles = [];
-        let currentJobId = null;
-        let currentResultUrl = null;
-        let pollingTimer = null;
-        let jobHistory = JSON.parse(localStorage.getItem('jj_capcut_history') || '[]');
-
-        // Elemen DOM
-        const dropzone = document.getElementById('dropzone');
-        const fileInput = document.getElementById('file-input');
-        const previewWrapper = document.getElementById('preview-wrapper');
-        const photoGrid = document.getElementById('photo-grid');
-        const photoCounterBadge = document.getElementById('photo-counter-badge');
-        const templateIdInput = document.getElementById('template-id');
-        const clearTemplateBtn = document.getElementById('clear-template-btn');
-        const generateBtn = document.getElementById('generate-btn');
-        const generateBtnText = document.getElementById('generate-btn-text');
-
-        // Inisialisasi saat halaman dimuat
-        window.addEventListener('DOMContentLoaded', () => {
-            renderHistory();
-            setupDragAndDrop();
-            
-            templateIdInput.addEventListener('input', () => {
-                clearTemplateBtn.classList.toggle('hidden', templateIdInput.value.trim() === '');
-            });
-
-            // Enter pada modal input
-            document.getElementById('manual-job-input').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') submitManualJobCheck();
-            });
-        });
-
-        // Fungsi Notifikasi Toast (Pengganti alert)
-        function showToast(message, type = 'info') {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            
-            const styles = {
-                success: 'bg-emerald-950/95 border-emerald-500/40 text-emerald-200',
-                error: 'bg-rose-950/95 border-rose-500/40 text-rose-200',
-                warning: 'bg-amber-950/95 border-amber-500/40 text-amber-200',
-                info: 'bg-slate-900/95 border-brand-500/40 text-slate-200'
-            };
-
-            const icons = {
-                success: 'fa-circle-check text-emerald-400',
-                error: 'fa-circle-exclamation text-rose-400',
-                warning: 'fa-triangle-exclamation text-amber-400',
-                info: 'fa-circle-info text-brand-400'
-            };
-
-            toast.className = `pointer-events-auto flex items-start gap-3 p-3.5 rounded-xl border backdrop-blur-md shadow-xl transition-all duration-300 transform translate-y-0 opacity-100 ${styles[type] || styles.info}`;
-            toast.innerHTML = `
-                <i class="fa-solid ${icons[type] || icons.info} mt-0.5 text-sm"></i>
-                <p class="text-xs font-medium leading-relaxed flex-1">${message}</p>
-            `;
-
-            container.appendChild(toast);
-
-            setTimeout(() => {
-                toast.classList.add('opacity-0', '-translate-y-2');
-                setTimeout(() => toast.remove(), 300);
-            }, 4000);
-        }
-
-        // Pengaturan Drag & Drop serta File Input
-        function setupDragAndDrop() {
-            dropzone.addEventListener('click', () => fileInput.click());
-
-            fileInput.addEventListener('change', (e) => {
-                handleFiles(e.target.files);
-                fileInput.value = ''; // Reset agar file yang sama bisa dipilih ulang jika perlu
-            });
-
-            ['dragenter', 'dragover'].forEach(eventName => {
-                dropzone.addEventListener(eventName, (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    dropzone.classList.add('border-brand-500', 'bg-brand-500/10');
-                });
-            });
-
-            ['dragleave', 'drop'].forEach(eventName => {
-                dropzone.addEventListener(eventName, (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    dropzone.classList.remove('border-brand-500', 'bg-brand-500/10');
-                });
-            });
-
-            dropzone.addEventListener('drop', (e) => {
-                const dt = e.dataTransfer;
-                if (dt && dt.files) {
-                    handleFiles(dt.files);
-                }
-            });
-        }
-
-        // Memproses file foto yang ditambahkan
-        function handleFiles(files) {
-            const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg'];
-            let addedCount = 0;
-
-            Array.from(files).forEach(file => {
-                if (!validTypes.includes(file.type)) {
-                    showToast(`File "${file.name}" dilewati (hanya JPG/PNG).`, 'warning');
-                    return;
-                }
-                selectedFiles.push(file);
-                addedCount++;
-            });
-
-            if (addedCount > 0) {
-                renderPhotoPreviews();
-            }
-        }
-
-        // Render thumbnail foto yang dipilih
-        function renderPhotoPreviews() {
-            photoCounterBadge.textContent = `${selectedFiles.length} Foto Dipilih`;
-            
-            if (selectedFiles.length === 0) {
-                previewWrapper.classList.add('hidden');
-                photoGrid.innerHTML = '';
-                return;
-            }
-
-            previewWrapper.classList.remove('hidden');
-            photoGrid.innerHTML = '';
-
-            selectedFiles.forEach((file, index) => {
-                const url = URL.createObjectURL(file);
-                const card = document.createElement('div');
-                card.className = 'relative group aspect-square rounded-xl overflow-hidden bg-slate-950 border border-slate-800 shadow-sm';
-                card.innerHTML = `
-                    <img src="${url}" alt="Foto ${index + 1}" class="w-full h-full object-cover">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-80"></div>
-                    <span class="absolute bottom-1.5 left-2 text-[10px] font-bold text-white bg-black/60 px-1.5 py-0.5 rounded">
-                        #${index + 1}
-                    </span>
-                    <button type="button" onclick="removePhoto(${index})" title="Hapus foto"
-                        class="absolute top-1.5 right-1.5 w-6 h-6 rounded-lg bg-rose-600/90 hover:bg-rose-500 text-white flex items-center justify-center text-xs opacity-90 sm:opacity-0 sm:group-hover:opacity-100 transition shadow">
-                        <i class="fa-solid fa-xmark"></i>
-                    </button>
-                `;
-                photoGrid.appendChild(card);
-            });
-        }
-
-        function removePhoto(index) {
-            selectedFiles.splice(index, 1);
-            renderPhotoPreviews();
-        }
-
-        function clearAllPhotos() {
-            selectedFiles = [];
-            renderPhotoPreviews();
-        }
-
-        function fillSampleTemplate() {
-            templateIdInput.value = '7649585745329540360';
-            clearTemplateBtn.classList.remove('hidden');
-            showToast('Contoh Template ID (1 slot) diisi.', 'info');
-        }
-
-        function clearTemplateId() {
-            templateIdInput.value = '';
-            clearTemplateBtn.classList.add('hidden');
-        }
-
-        // Mengirim POST Request ke API Create Job
-        async function submitJob() {
-            if (selectedFiles.length === 0) {
-                showToast('Silakan unggah minimal 1 foto terlebih dahulu.', 'warning');
-                return;
-            }
-
-            // Hentikan polling lama jika masih berjalan
-            stopPolling();
-
-            // Set status tombol loading
-            generateBtn.disabled = true;
-            generateBtnText.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Mengunggah Foto...';
-
-            try {
-                const fd = new FormData();
-                for (const file of selectedFiles) {
-                    fd.append('photos', file);
-                }
-
-                const tplId = templateIdInput.value.trim();
-                if (tplId) {
-                    fd.append('template_id', tplId);
-                }
-
-                const response = await fetch(API_BASE_URL, {
-                    method: 'POST',
-                    body: fd
-                });
-
-                const data = await response.json();
-                updateRawJson(data);
-
-                if (!response.ok && !data.job_id) {
-                    throw new Error(data.message || `Gagal membuat job (Status ${response.status})`);
-                }
-
-                if (data.job_id) {
-                    currentJobId = data.job_id;
-                    saveToHistory({
-                        job_id: data.job_id,
-                        template_title: data.template?.title || 'Template JJ',
-                        template_id: data.template?.id || tplId || '-',
-                        photo_count: data.photo_count || selectedFiles.length,
-                        status: data.status || 'processing',
-                        created_at: data.created_at || new Date().toISOString()
-                    });
-
-                    // Jika langsung selesai (jarang, tapi diantisipasi)
-                    const videoUrl = extractVideoUrl(data);
-                    if ((data.success === true || data.status === 'completed' || data.status === 'done') && videoUrl) {
-                        showCompletedState(data, videoUrl);
-                        showToast('Video langsung selesai dirender!', 'success');
-                    } else {
-                        showProcessingState(data);
-                        showToast('Job berhasil dibuat! Memulai pemantauan render...', 'success');
-                        startPolling(data.job_id);
-                    }
-                } else {
-                    throw new Error(data.message || 'Server tidak mengembalikan job_id.');
-                }
-
-            } catch (error) {
-                console.error('Create Job Error:', error);
-                showErrorState(error.message || 'Gagal terhubung ke server API.');
-                showToast(error.message || 'Terjadi kesalahan jaringan.', 'error');
-            } finally {
-                generateBtn.disabled = false;
-                generateBtnText.textContent = 'Generate Video JJ Sekarang';
-            }
-        }
-
-        // Polling GET ?id=JOB_ID
-        function startPolling(jobId) {
-            stopPolling();
-            document.getElementById('polling-indicator').classList.remove('hidden');
-            document.getElementById('polling-indicator').classList.add('flex');
-
-            pollingTimer = setInterval(() => {
-                checkJobStatus(jobId, true);
-            }, 4000);
-        }
-
-        function stopPolling() {
-            if (pollingTimer) {
-                clearInterval(pollingTimer);
-                pollingTimer = null;
-            }
-            document.getElementById('polling-indicator').classList.add('hidden');
-            document.getElementById('polling-indicator').classList.remove('flex');
-        }
-
-        async function manualCheckCurrentJob() {
-            if (!currentJobId) return;
-            showToast('Memeriksa status terbaru...', 'info');
-            await checkJobStatus(currentJobId, false);
-        }
-
-        async function checkJobStatus(jobId, isSilent = false) {
-            try {
-                const response = await fetch(`${API_BASE_URL}?id=${encodeURIComponent(jobId)}`);
-                const data = await response.json();
-                updateRawJson(data);
-
-                // Cek jika 404 atau gagal permanen
-                if (response.status === 404 || (data.status === 404 && data.success === false)) {
-                    stopPolling();
-                    updateHistoryStatus(jobId, 'expired');
-                    showErrorState(data.message || 'Job tidak ditemukan atau sudah kedaluwarsa.');
-                    if (!isSilent) showToast('Job tidak ditemukan / kedaluwarsa.', 'error');
-                    return;
-                }
-
-                if (data.status === 'failed' || data.status === 'error') {
-                    stopPolling();
-                    updateHistoryStatus(jobId, 'failed');
-                    showErrorState(data.message || 'Proses rendering gagal di server.');
-                    return;
-                }
-
-                // Cek apakah sudah ada URL hasil video
-                const videoUrl = extractVideoUrl(data);
-                if (videoUrl || data.success === true || data.status === 'completed' || data.status === 'success' || data.status === 'done') {
-                    if (videoUrl) {
-                        stopPolling();
-                        updateHistoryStatus(jobId, 'completed');
-                        showCompletedState(data, videoUrl);
-                        showToast('Render selesai! Video siap diputar & diunduh.', 'success');
-                        return;
-                    }
-                }
-
-                // Masih processing
-                if (data.status === 'processing' || data.status === 'pending' || data.status === 'rendering') {
-                    showProcessingState(data);
-                }
-
-            } catch (error) {
-                console.error('Check Job Error:', error);
-                if (!isSilent) {
-                    showToast('Gagal mengecek status job: ' + error.message, 'error');
-                }
-            }
-        }
-
-        // Helper fleksibel untuk mengekstrak URL video dari berbagai kemungkinan field respons API
-        function extractVideoUrl(data) {
-            if (!data) return null;
-            return data.result_url ||
-                   data.video_url ||
-                   data.download_url ||
-                   data.url ||
-                   (typeof data.result === 'string' ? data.result : null) ||
-                   (data.result && (data.result.url || data.result.video_url || data.result.download_url)) ||
-                   (data.data && (data.data.url || data.data.video_url || data.data.result_url)) ||
-                   null;
-        }
-
-        // Manajemen Tampilan Panel Status
-        function hideAllStates() {
-            document.getElementById('state-empty').classList.add('hidden');
-            document.getElementById('state-processing').classList.add('hidden');
-            document.getElementById('state-completed').classList.add('hidden');
-            document.getElementById('state-error').classList.add('hidden');
-        }
-
-        function resetToEmptyState() {
-            stopPolling();
-            hideAllStates();
-            document.getElementById('state-empty').classList.remove('hidden');
-        }
-
-        function showProcessingState(data) {
-            hideAllStates();
-            document.getElementById('state-processing').classList.remove('hidden');
-
-            document.getElementById('proc-job-id').textContent = data.job_id || currentJobId || '-';
-            
-            const tpl = data.template || {};
-            document.getElementById('proc-tpl-title').textContent = tpl.title || 'Acak / Otomatis';
-            document.getElementById('proc-tpl-id').textContent = tpl.id || '-';
-            
-            const tplLink = document.getElementById('proc-tpl-link');
-            if (tpl.view_url) {
-                tplLink.href = tpl.view_url;
-                tplLink.classList.remove('pointer-events-none', 'text-slate-400');
-            } else {
-                tplLink.href = '#';
-                tplLink.classList.add('pointer-events-none', 'text-slate-400');
-            }
-
-            const count = data.photo_count ?? selectedFiles.length;
-            const slots = tpl.slots ?? count;
-            document.getElementById('proc-slots').textContent = `${count} Foto / ${slots} Slot`;
-        }
-
-        function showCompletedState(data, videoUrl) {
-            hideAllStates();
-            document.getElementById('state-completed').classList.remove('hidden');
-
-            currentResultUrl = videoUrl;
-            const videoEl = document.getElementById('result-video');
-            videoEl.src = videoUrl;
-            videoEl.load();
-
-            document.getElementById('done-job-id').textContent = data.job_id || currentJobId || 'Selesai';
-            document.getElementById('done-template-badge').textContent = data.template?.id ? `#${data.template.id}` : 'JJ Video';
-            
-            const dlBtn = document.getElementById('download-video-btn');
-            dlBtn.href = videoUrl;
-        }
-
-        function showErrorState(message) {
-            hideAllStates();
-            document.getElementById('state-error').classList.remove('hidden');
-            document.getElementById('error-message-text').textContent = message;
-        }
-
-        // Raw JSON Viewer
-        function updateRawJson(jsonObj) {
-            const wrapper = document.getElementById('raw-json-wrapper');
-            const content = document.getElementById('raw-json-content');
-            wrapper.classList.remove('hidden');
-            content.textContent = JSON.stringify(jsonObj, null, 2);
-        }
-
-        function toggleRawJson() {
-            const content = document.getElementById('raw-json-content');
-            const chevron = document.getElementById('raw-json-chevron');
-            content.classList.toggle('hidden');
-            chevron.classList.toggle('rotate-180');
-        }
-
-        // Clipboard Helper (Menggunakan execCommand sesuai aturan iFrame)
-        function copyText(text) {
-            if (!text) return;
-            const textarea = document.createElement('textarea');
-            textarea.value = text;
-            textarea.style.position = 'fixed';
-            textarea.style.opacity = '0';
-            document.body.appendChild(textarea);
-            textarea.select();
-            try {
-                document.execCommand('copy');
-                showToast('Berhasil disalin ke papan klip!', 'success');
-            } catch (err) {
-                showToast('Gagal menyalin teks.', 'error');
-            }
-            document.body.removeChild(textarea);
-        }
-
-        function copyResultUrl() {
-            if (currentResultUrl) {
-                copyText(currentResultUrl);
-            }
-        }
-
-        // Modal Cek Job Manual
-        function openCheckModal() {
-            document.getElementById('check-modal').classList.remove('hidden');
-            document.getElementById('manual-job-input').focus();
-        }
-
-        function closeCheckModal() {
-            document.getElementById('check-modal').classList.add('hidden');
-        }
-
-        function submitManualJobCheck() {
-            const input = document.getElementById('manual-job-input').value.trim();
-            if (!input) {
-                showToast('Masukkan Job ID terlebih dahulu.', 'warning');
-                return;
-            }
-            closeCheckModal();
-            currentJobId = input;
-            showProcessingState({ job_id: input });
-            checkJobStatus(input, false);
-            startPolling(input);
-        }
-
-        // Riwayat Job (LocalStorage)
-        function saveToHistory(item) {
-            jobHistory = jobHistory.filter(h => h.job_id !== item.job_id);
-            jobHistory.unshift(item);
-            if (jobHistory.length > 10) jobHistory.pop();
-            localStorage.setItem('jj_capcut_history', JSON.stringify(jobHistory));
-            renderHistory();
-        }
-
-        function updateHistoryStatus(jobId, status) {
-            const idx = jobHistory.findIndex(h => h.job_id === jobId);
-            if (idx !== -1) {
-                jobHistory[idx].status = status;
-                localStorage.setItem('jj_capcut_history', JSON.stringify(jobHistory));
-                renderHistory();
-            }
-        }
-
-        function clearHistory() {
-            jobHistory = [];
-            localStorage.removeItem('jj_capcut_history');
-            renderHistory();
-            showToast('Riwayat dibersihkan.', 'info');
-        }
-
-        function loadHistoryItem(jobId) {
-            currentJobId = jobId;
-            showProcessingState({ job_id: jobId });
-            checkJobStatus(jobId, false);
-            startPolling(jobId);
-        }
-
-        function renderHistory() {
-            const listEl = document.getElementById('history-list');
-            if (jobHistory.length === 0) {
-                listEl.innerHTML = `<p class="text-xs text-slate-500 text-center py-4">Belum ada riwayat job tersimpan.</p>`;
-                return;
-            }
-
-            listEl.innerHTML = jobHistory.map(item => {
-                let badgeClass = 'bg-amber-500/10 text-amber-400 border-amber-500/20';
-                let badgeLabel = 'Proses';
-                if (item.status === 'completed') {
-                    badgeClass = 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20';
-                    badgeLabel = 'Selesai';
-                } else if (item.status === 'expired' || item.status === 'failed') {
-                    badgeClass = 'bg-rose-500/10 text-rose-400 border-rose-500/20';
-                    badgeLabel = 'Kedaluwarsa';
-                }
-
-                return `
-                    <div onclick="loadHistoryItem('${item.job_id}')" class="p-2.5 rounded-xl bg-slate-950/70 hover:bg-slate-800/70 border border-slate-800/80 cursor-pointer transition flex items-center justify-between gap-2">
-                        <div class="min-w-0">
-                            <p class="text-xs font-mono font-semibold text-slate-200 truncate">${item.job_id}</p>
-                            <p class="text-[11px] text-slate-500 truncate">
-                                ${item.template_title || 'Template'} • ${item.photo_count} Foto
-                            </p>
-                        </div>
-                        <span class="text-[10px] font-semibold px-2 py-0.5 rounded-md border shrink-0 ${badgeClass}">
-                            ${badgeLabel}
-                        </span>
-                    </div>
-                `;
-            }).join('');
-        }
-    </script>
+    <!-- KANAN -->
+    <div class="side">
+      <section class="card stage-card" aria-live="polite">
+        <div class="phone" id="phone">
+          <div class="msg" id="s-empty"><svg><use href="#i-film"/></svg><b>Hasil muncul di sini</b>Video vertikal 9:16 siap diputar dan diunduh.</div>
+          <img id="s-flash-img" alt="" hidden>
+          <div class="flash" id="flash" hidden></div>
+          <span class="timer" id="timer" hidden>0:00</span>
+          <video id="video" controls playsinline hidden></video>
+          <div class="msg" id="s-error" hidden><svg><use href="#i-warn"/></svg><b>Render gagal</b><span id="err-t"></span></div>
+        </div>
+
+        <div class="status" id="status" hidden><span class="dot"></span><span id="status-t"></span></div>
+
+        <div class="meta" id="meta" hidden>
+          <div><span>Template</span><span id="m-title">-</span></div>
+          <div><span>ID template</span><a id="m-link" href="#" target="_blank" rel="noopener noreferrer"><span id="m-id">-</span></a></div>
+          <div><span>Foto / slot</span><span id="m-slots">-</span></div>
+          <div><span>Job ID</span><span id="m-job" style="font-family:ui-monospace,monospace;font-size:.8rem">-</span></div>
+        </div>
+
+        <div class="btns" id="done-btns" hidden>
+          <a class="btn main" id="dl" href="#" target="_blank" rel="noopener" download="jj-capcut-result.mp4"><svg><use href="#i-dl"/></svg>Unduh</a>
+          <button class="btn" onclick="copyText(resultUrl)"><svg><use href="#i-link"/></svg>Salin tautan</button>
+        </div>
+        <div class="btns" id="proc-btns" hidden>
+          <button class="btn" onclick="manualCheck()">Cek sekarang</button>
+          <button class="btn" onclick="copyText(currentJobId)">Salin Job ID</button>
+        </div>
+        <button class="btn" id="reset-btn" style="width:100%;margin-top:10px" onclick="resetStage()" hidden>Tutup</button>
+
+        <p class="note" id="note" hidden>Tautan hasil punya masa berlaku terbatas. Unduh videonya sebelum kedaluwarsa.</p>
+
+        <div class="raw" id="raw" hidden>
+          <button class="link" style="padding:0" onclick="document.getElementById('raw-pre').hidden^=1">Lihat respons API</button>
+          <pre id="raw-pre" hidden></pre>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="row" style="margin-bottom:12px">
+          <h2>Riwayat</h2>
+          <button class="link" onclick="clearHistory()">Bersihkan</button>
+        </div>
+        <div class="hist" id="hist"></div>
+      </section>
+    </div>
+  </div>
+</main>
+
+<dialog id="check">
+  <h3>Cek Job ID</h3>
+  <p class="sub">Masukkan Job ID untuk melihat status atau mengambil ulang video, misalnya <code>jj_b293ca008459f30e</code>.</p>
+  <input id="manual" placeholder="jj_xxxxxxxxxxxxxxxx" autocomplete="off">
+  <div class="acts">
+    <button class="btn" onclick="check.close()">Batal</button>
+    <button class="btn main" onclick="submitManual()">Periksa</button>
+  </div>
+</dialog>
+
+<script>
+const API = 'https://na-api-nue-api-e7bfd3f4.koyeb.app/api/downloader/jj';
+const POLL_MS = 4000, MAX_WAIT = 10 * 60 * 1000;
+const $ = id => document.getElementById(id);
+const file = $('file'), strip = $('strip'), empty = $('empty'), tpl = $('tpl'), go = $('go');
+let files = [], urls = new Map(), currentJobId = null, resultUrl = null, poll = null, tick = null, flashT = null, startAt = 0, dragFrom = null;
+let history = [];
+try { history = JSON.parse(localStorage.getItem('jj_capcut_history') || '[]'); } catch (e) {}
+
+function toast(msg, type = 'info') {
+  const t = document.createElement('div');
+  t.className = 'toast ' + type; t.textContent = msg;
+  $('toasts').appendChild(t);
+  setTimeout(() => t.remove(), 3800);
+}
+const ico = n => `<svg><use href="#i-${n}"/></svg>`;
+
+/* ---------- Foto ---------- */
+function addFiles(list) {
+  const ok = ['image/jpeg', 'image/png', 'image/webp'];
+  let n = 0;
+  [...list].forEach(f => {
+    if (!ok.includes(f.type)) return toast(`"${f.name}" dilewati. Hanya JPG, PNG, WebP.`, 'error');
+    files.push(f); n++;
+  });
+  if (n) renderStrip();
+}
+function urlOf(f) { if (!urls.has(f)) urls.set(f, URL.createObjectURL(f)); return urls.get(f); }
+function move(i, d) { const j = i + d; if (j < 0 || j >= files.length) return; [files[i], files[j]] = [files[j], files[i]]; renderStrip(); }
+function removeAt(i) { URL.revokeObjectURL(urls.get(files[i])); urls.delete(files[i]); files.splice(i, 1); renderStrip(); }
+
+function renderStrip() {
+  const n = files.length;
+  $('count').textContent = n + ' foto';
+  empty.hidden = n > 0; strip.hidden = $('strip-hint').hidden = n === 0;
+  go.disabled = n === 0;
+  $('dock-title').textContent = n ? `${n} foto siap` : 'Belum ada foto';
+  $('dock-sub').textContent = n ? (tpl.value.trim() ? 'Template ID ' + tpl.value.trim() : 'Template dipilih otomatis') : 'Tambahkan minimal 1 foto';
+  strip.innerHTML = '';
+  files.forEach((f, i) => {
+    const d = document.createElement('div');
+    d.className = 'frame'; d.draggable = true;
+    d.innerHTML = `<img src="${urlOf(f)}" alt="Foto ${i + 1}"><span class="n">${i + 1}</span>
+      <div class="tools"><button type="button" aria-label="Geser ke kiri" ${i === 0 ? 'disabled' : ''}>${ico('l')}</button>
+      <button type="button" class="x" aria-label="Hapus foto ${i + 1}">${ico('x')}</button>
+      <button type="button" aria-label="Geser ke kanan" ${i === n - 1 ? 'disabled' : ''}>${ico('r')}</button></div>`;
+    const [b1, b2, b3] = d.querySelectorAll('button');
+    b1.onclick = () => move(i, -1); b2.onclick = () => removeAt(i); b3.onclick = () => move(i, 1);
+    d.ondragstart = e => { dragFrom = i; d.classList.add('drag'); e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', 'x'); };
+    d.ondragend = () => { dragFrom = null; d.classList.remove('drag'); };
+    d.ondragover = e => { if (dragFrom !== null) { e.preventDefault(); d.classList.add('over'); } };
+    d.ondragleave = () => d.classList.remove('over');
+    d.ondrop = e => { if (dragFrom === null) return; e.preventDefault(); e.stopPropagation(); const [m] = files.splice(dragFrom, 1); files.splice(i, 0, m); dragFrom = null; renderStrip(); };
+    strip.appendChild(d);
+  });
+  if (n) {
+    const a = document.createElement('button');
+    a.type = 'button'; a.className = 'add'; a.innerHTML = ico('plus') + 'Tambah';
+    a.onclick = () => file.click();
+    strip.appendChild(a);
+  }
+}
+file.onchange = e => { addFiles(e.target.files); file.value = ''; };
+tpl.oninput = renderStrip;
+function sampleTpl() { tpl.value = '7649585745329540360'; renderStrip(); toast('Contoh Template ID (1 slot) diisi.'); }
+
+// drag & drop file dari luar
+const zone = document.querySelector('.card');
+['dragenter', 'dragover'].forEach(ev => zone.addEventListener(ev, e => { if (dragFrom === null && e.dataTransfer?.types?.includes('Files')) { e.preventDefault(); empty.classList.add('hot'); } }));
+['dragleave', 'drop'].forEach(ev => zone.addEventListener(ev, () => empty.classList.remove('hot')));
+zone.addEventListener('drop', e => { if (dragFrom === null && e.dataTransfer?.files?.length) { e.preventDefault(); addFiles(e.dataTransfer.files); } });
+
+/* ---------- Panel hasil ---------- */
+function stage(state) {
+  const show = (id, v) => $(id).hidden = !v;
+  show('s-empty', state === 'empty');
+  show('video', state === 'done');
+  show('s-error', state === 'error');
+  const proc = state === 'proc';
+  show('flash', proc && files.length > 0); show('s-flash-img', proc && files.length > 0); show('timer', proc);
+  show('status', state !== 'empty'); show('meta', state === 'proc' || state === 'done');
+  show('done-btns', state === 'done'); show('proc-btns', proc); show('note', state === 'done');
+  show('reset-btn', state === 'error');
+  $('status').className = 'status' + (state === 'done' ? ' ok' : state === 'error' ? ' bad' : '');
+  $('status-t').textContent = { proc: 'Sedang dirender', done: 'Video selesai', error: 'Gagal' }[state] || '';
+  if (state !== 'proc') stopFlash();
+  if (state === 'empty') $('raw').hidden = true;
+}
+function fillMeta(d) {
+  const t = d.template || {};
+  $('m-title').textContent = t.title || 'Otomatis';
+  $('m-id').textContent = t.id || '-';
+  const l = $('m-link');
+  if (t.view_url) { l.href = t.view_url; l.style.pointerEvents = ''; } else { l.removeAttribute('href'); l.style.pointerEvents = 'none'; }
+  const c = d.photo_count ?? files.length;
+  $('m-slots').textContent = `${c} foto / ${t.slots ?? c} slot`;
+  $('m-job').textContent = d.job_id || currentJobId || '-';
+}
+function showProcessing(d) {
+  stage('proc'); fillMeta(d); startFlash();
+}
+function showDone(d, url) {
+  stage('done'); fillMeta(d); resultUrl = url;
+  const v = $('video'); v.src = url; v.load();
+  $('dl').href = url;
+}
+function showError(msg) { stage('error'); $('err-t').textContent = msg; }
+function resetStage() { stopPolling(); stage('empty'); }
+
+// efek jedag-jedug: foto berganti cepat selama render
+function startFlash() {
+  stopFlash();
+  startAt = startAt || Date.now();
+  const imgs = files.map(urlOf), el = $('s-flash-img'), fl = $('flash');
+  const slow = matchMedia('(prefers-reduced-motion:reduce)').matches;
+  let i = 0;
+  if (imgs.length) {
+    const step = () => { el.src = imgs[i++ % imgs.length]; fl.classList.remove('on'); void fl.offsetWidth; if (!slow) fl.classList.add('on'); };
+    step(); flashT = setInterval(step, slow ? 1400 : 180);
+  }
+  const t = $('timer');
+  const upd = () => { const s = Math.floor((Date.now() - startAt) / 1000); t.textContent = Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
+  upd(); tick = setInterval(upd, 1000);
+}
+function stopFlash() { clearInterval(flashT); clearInterval(tick); flashT = tick = null; }
+
+function raw(d) { $('raw').hidden = false; $('raw-pre').textContent = JSON.stringify(d, null, 2); }
+
+/* ---------- API ---------- */
+function extractUrl(d) {
+  if (!d) return null;
+  return d.result_url || d.video_url || d.download_url || d.url ||
+    (typeof d.result === 'string' ? d.result : null) ||
+    (d.result && (d.result.url || d.result.video_url || d.result.download_url)) ||
+    (d.data && (d.data.url || d.data.video_url || d.data.result_url)) || null;
+}
+
+async function submitJob() {
+  if (!files.length) return toast('Tambahkan minimal 1 foto dulu.', 'error');
+  stopPolling(); startAt = 0;
+  go.disabled = true; $('go-t').textContent = 'Mengunggah…';
+  try {
+    const fd = new FormData();
+    files.forEach(f => fd.append('photos', f));
+    const id = tpl.value.trim();
+    if (id) fd.append('template_id', id);
+    const res = await fetch(API, { method: 'POST', body: fd });
+    const d = await res.json();
+    raw(d);
+    if (!res.ok && !d.job_id) throw new Error(d.message || `Gagal membuat job (status ${res.status})`);
+    if (!d.job_id) throw new Error(d.message || 'Server tidak mengembalikan job_id.');
+    currentJobId = d.job_id;
+    saveHistory({ job_id: d.job_id, template_title: d.template?.title || 'Template JJ', template_id: d.template?.id || id || '-', photo_count: d.photo_count || files.length, status: d.status || 'processing' });
+    const url = extractUrl(d);
+    if ((d.success === true || ['completed', 'done'].includes(d.status)) && url) {
+      updateHistory(d.job_id, 'completed'); showDone(d, url); toast('Video langsung selesai.', 'success');
+    } else {
+      showProcessing(d); startPolling(d.job_id); toast('Job dibuat. Menunggu render selesai.', 'success');
+      if (innerWidth < 900) $('phone').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  } catch (e) {
+    showError(e.message || 'Tidak bisa terhubung ke server.'); toast(e.message || 'Terjadi kesalahan jaringan.', 'error');
+  } finally {
+    go.disabled = files.length === 0; $('go-t').textContent = 'Generate video';
+  }
+}
+
+function startPolling(id) {
+  stopPolling();
+  const began = Date.now();
+  poll = setInterval(() => {
+    if (Date.now() - began > MAX_WAIT) { stopPolling(); showError('Render terlalu lama. Coba cek lagi nanti lewat Cek Job ID.'); return; }
+    checkJob(id, true);
+  }, POLL_MS);
+}
+function stopPolling() { clearInterval(poll); poll = null; }
+const manualCheck = () => currentJobId && (toast('Memeriksa status…'), checkJob(currentJobId, false));
+
+async function checkJob(id, silent) {
+  try {
+    const res = await fetch(`${API}?id=${encodeURIComponent(id)}`);
+    const d = await res.json();
+    raw(d);
+    if (res.status === 404 || (d.status === 404 && d.success === false)) {
+      stopPolling(); updateHistory(id, 'expired'); showError(d.message || 'Job tidak ditemukan atau sudah kedaluwarsa.'); return;
+    }
+    if (['failed', 'error'].includes(d.status)) {
+      stopPolling(); updateHistory(id, 'failed'); showError(d.message || 'Render gagal di server.'); return;
+    }
+    const url = extractUrl(d);
+    if (url) {
+      stopPolling(); updateHistory(id, 'completed'); showDone(d, url); toast('Render selesai.', 'success'); return;
+    }
+    if (['processing', 'pending', 'rendering'].includes(d.status)) { if (!$('flash').hidden || !$('status').className.includes('ok')) fillMeta({ ...d, job_id: id }); }
+    else if (!silent) toast('Masih diproses.');
+  } catch (e) {
+    if (!silent) toast('Gagal mengecek status: ' + e.message, 'error');
+  }
+}
+
+/* ---------- Cek manual & riwayat ---------- */
+const check = $('check');
+function openCheck() { check.showModal(); $('manual').focus(); }
+$('manual').addEventListener('keydown', e => e.key === 'Enter' && submitManual());
+function submitManual() {
+  const v = $('manual').value.trim();
+  if (!v) return toast('Masukkan Job ID dulu.', 'error');
+  check.close(); openJob(v);
+}
+function openJob(id) {
+  stopPolling(); currentJobId = id; startAt = 0; resultUrl = null;
+  showProcessing({ job_id: id }); checkJob(id, false); startPolling(id);
+  if (innerWidth < 900) $('phone').scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+function persist() { try { localStorage.setItem('jj_capcut_history', JSON.stringify(history)); } catch (e) {} renderHistory(); }
+function saveHistory(it) { history = history.filter(h => h.job_id !== it.job_id); history.unshift(it); history = history.slice(0, 10); persist(); }
+function updateHistory(id, s) { const h = history.find(x => x.job_id === id); if (h) { h.status = s; persist(); } }
+function clearHistory() { history = []; persist(); toast('Riwayat dibersihkan.'); }
+function renderHistory() {
+  const el = $('hist');
+  if (!history.length) { el.innerHTML = '<p class="sub">Job yang kamu buat akan tersimpan di sini.</p>'; return; }
+  const label = { completed: 'Selesai', failed: 'Gagal', expired: 'Kedaluwarsa' };
+  el.innerHTML = '';
+  history.forEach(h => {
+    const b = document.createElement('button');
+    b.className = 'hi';
+    const l = document.createElement('div'); l.style.minWidth = 0;
+    const t = document.createElement('b'); t.textContent = h.job_id;
+    const s = document.createElement('small'); s.textContent = `${h.template_title || 'Template'} · ${h.photo_count} foto`;
+    l.append(t, s);
+    const tag = document.createElement('span'); tag.className = 'tag ' + (h.status || ''); tag.textContent = label[h.status] || 'Proses';
+    b.append(l, tag); b.onclick = () => openJob(h.job_id);
+    el.appendChild(b);
+  });
+}
+
+/* ---------- Util ---------- */
+async function copyText(t) {
+  if (!t) return;
+  try { await navigator.clipboard.writeText(t); }
+  catch (e) {
+    const a = document.createElement('textarea'); a.value = t; a.style.cssText = 'position:fixed;opacity:0';
+    document.body.appendChild(a); a.select(); try { document.execCommand('copy'); } catch (_) {} a.remove();
+  }
+  toast('Tersalin.', 'success');
+}
+
+renderHistory(); renderStrip(); stage('empty');
+</script>
 </body>
 </html>
