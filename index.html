@@ -25,7 +25,7 @@ svg{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:2;stroke-lin
 header{background:#fff;border-bottom:1px solid var(--ink);padding-top:env(safe-area-inset-top)}
 .bar{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:58px}
 .brand{display:flex;align-items:center;gap:10px;min-width:0;flex:1}
-.brand img{height:50px;width:auto;max-width:110px;object-fit:contain;flex:none}
+.brand img{height:30px;width:auto;max-width:110px;object-fit:contain;flex:none}
 .brand b{font-size:1.05rem;font-weight:800;font-stretch:115%;letter-spacing:-.01em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
 .ghost{flex:none;display:inline-flex;align-items:center;gap:8px;padding:8px 13px;border:1px solid var(--ink);border-radius:6px;font-size:.86rem;font-weight:600;white-space:nowrap;transition:background .12s}
 .ghost:hover{background:var(--bg)}
@@ -37,7 +37,7 @@ header{background:#fff;border-bottom:1px solid var(--ink);padding-top:env(safe-a
 
 .grid{display:grid;gap:16px;grid-template-columns:minmax(0,1fr);align-items:start}
 .col{display:grid;gap:16px;min-width:0}
-@media(min-width:900px){.grid{grid-template-columns:minmax(0,1.2fr) minmax(0,1fr)}.stage{position:sticky;top:16px}}
+@media(min-width:900px){.grid{grid-template-columns:minmax(0,1.2fr) minmax(0,1fr)}}
 .panel{background:#fff;border:1px solid var(--ink);border-radius:8px;overflow:hidden;min-width:0}
 .ph{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 16px;border-bottom:1px solid var(--ink);background:#f6f7f9;font-weight:700;font-stretch:112%;font-size:.95rem}
 .pb{padding:16px}
@@ -103,7 +103,10 @@ main{padding-bottom:120px}
 .steps li.done{border-color:var(--ok);color:var(--ink)}.steps li.on{border-color:var(--pink);color:var(--ink);font-weight:700}
 .meta{margin-top:14px;display:grid;gap:6px;font-size:.86rem}
 .meta div{display:flex;justify-content:space-between;gap:12px}
-.meta span:first-child{color:var(--muted)}
+.meta>div>span:first-child{color:var(--muted)}
+.meta .val{justify-content:flex-end;align-items:center;gap:8px;min-width:0}
+.cp{width:28px;height:28px;display:inline-grid;place-items:center;border:1px solid var(--line);border-radius:5px;flex:none;transition:border-color .12s,background .12s}
+.cp:hover{border-color:var(--ink);background:var(--bg)}
 .meta a{color:var(--pink);font-weight:700;word-break:break-all;text-align:right}
 .btns{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
 .btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:11px;border-radius:6px;font-weight:700;font-size:.9rem;border:1px solid var(--ink);background:#fff;transition:background .12s,transform .1s}
@@ -130,7 +133,7 @@ main{padding-bottom:120px}
 .faq summary svg{transition:transform .2s}.faq details[open] summary svg{transform:rotate(180deg)}
 .faq p{padding:0 0 14px;color:var(--muted);font-size:.92rem;max-width:62ch}
 
-dialog{border:1px solid var(--ink);border-radius:8px;padding:22px;width:min(92vw,420px);background:#fff;color:var(--ink)}
+dialog{margin:auto;max-height:calc(100dvh - 32px);border:1px solid var(--ink);border-radius:8px;padding:22px;width:min(92vw,420px);background:#fff;color:var(--ink)}
 dialog::backdrop{background:#1b1d24b3}
 dialog h3{font-size:1.1rem;margin-bottom:6px;font-stretch:110%}
 dialog input{width:100%;margin:14px 0;padding:11px 13px;border:1px solid var(--ink);border-radius:6px;background:#fff}
@@ -155,6 +158,7 @@ dialog input{width:100%;margin:14px 0;padding:11px 13px;border:1px solid var(--i
 <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></symbol>
 <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 3 5 14h6l-1 7 8-11h-6z"/></symbol>
 <symbol id="i-film" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M8 4v16M16 4v16M3 9h5M3 15h5M16 9h5M16 15h5"/></symbol>
+<symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></symbol>
 <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></symbol>
 <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
 <symbol id="i-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
@@ -229,9 +233,9 @@ dialog input{width:100%;margin:14px 0;padding:11px 13px;border:1px solid var(--i
 
           <div class="meta" id="meta" hidden>
             <div><span>Template</span><span id="m-title">-</span></div>
-            <div><span>ID template</span><a id="m-link" href="#" target="_blank" rel="noopener noreferrer"><span id="m-id">-</span></a></div>
+            <div><span>ID template</span><div class="val"><a id="m-link" href="#" target="_blank" rel="noopener noreferrer"><span id="m-id">-</span></a><button type="button" class="cp" onclick="copyMeta('m-id')" aria-label="Salin ID template" title="Salin ID template"><svg><use href="#i-copy"/></svg></button></div></div>
             <div><span>Foto / slot</span><span id="m-slots">-</span></div>
-            <div><span>Job ID</span><span id="m-job" style="font-size:.8rem">-</span></div>
+            <div><span>Job ID</span><div class="val"><span id="m-job" style="font-size:.8rem;word-break:break-all">-</span><button type="button" class="cp" onclick="copyMeta('m-job')" aria-label="Salin Job ID" title="Salin Job ID"><svg><use href="#i-copy"/></svg></button></div></div>
           </div>
 
           <div class="btns" id="done-btns" hidden>
@@ -243,7 +247,10 @@ dialog input{width:100%;margin:14px 0;padding:11px 13px;border:1px solid var(--i
             <button class="btn" onclick="manualCheck()">Cek sekarang</button>
             <button class="btn" onclick="copyText(currentJobId)">Salin Job ID</button>
           </div>
-          <button class="btn" id="reset-btn" style="width:100%;margin-top:10px" onclick="resetStage()" hidden>Tutup</button>
+          <div class="btns" id="err-btns" hidden>
+            <button class="btn main" onclick="currentJobId ? openJob(currentJobId) : resetStage()">Cek lagi</button>
+            <button class="btn" onclick="resetStage()">Tutup</button>
+          </div>
           <p class="note" id="note" hidden>Tautan hasil punya masa berlaku terbatas. Unduh videonya sebelum kedaluwarsa.</p>
 
           <div class="raw" id="raw" hidden>
@@ -363,7 +370,7 @@ function stage(state) {
   show('flash', proc && files.length > 0); show('s-flash-img', proc && files.length > 0); show('timer', proc);
   show('status', state !== 'empty'); show('meta', state === 'proc' || state === 'done');
   show('done-btns', state === 'done'); show('proc-btns', proc); show('note', state === 'done');
-  show('reset-btn', state === 'error');
+  show('err-btns', state === 'error');
   $('status').className = 'status' + (state === 'done' ? ' ok' : state === 'error' ? ' bad' : '');
   $('status-t').textContent = { proc: 'Sedang dirender', done: 'Video selesai', error: 'Gagal' }[state] || '';
   curState = state;
@@ -461,7 +468,7 @@ async function submitJob() {
 }
 
 function startPolling(id) {
-  stopPolling();
+  stopPolling(); badCount = 0;
   const began = Date.now();
   poll = setInterval(() => {
     if (Date.now() - began > MAX_WAIT) { stopPolling(); showError('Render terlalu lama. Coba cek lagi nanti lewat Cek Job ID.'); return; }
@@ -473,20 +480,25 @@ const manualCheck = () => currentJobId && (toast('Memeriksa status…'), checkJo
 
 async function checkJob(id, silent) {
   try {
-    const res = await fetch(`${API}?id=${encodeURIComponent(id)}`);
+    const res = await fetch(`${API}?id=${encodeURIComponent(id)}`, { cache: 'no-store' });
     const d = await readJson(res);
     raw(d);
-    if (res.status === 404 || (d.status === 404 && d.success === false)) {
-      stopPolling(); updateHistory(id, 'expired'); showError(d.message || 'Job tidak ditemukan atau sudah kedaluwarsa.'); return;
+    const gone = res.status === 404 || (d.status === 404 && d.success === false);
+    const failed = ['failed', 'error'].includes(d.status);
+    if (gone || failed) {
+      badCount++;
+      if (!silent || badCount >= (gone ? 5 : 3)) {
+        stopPolling(); updateHistory(id, gone ? 'expired' : 'failed');
+        showError((d.message || (gone ? 'Job tidak ditemukan atau sudah kedaluwarsa.' : 'Render gagal di server.')) + ` (status ${d.status || res.status})`);
+      } else $('status-t').textContent = `Menunggu server (${badCount})…`;
+      return;
     }
-    if (['failed', 'error'].includes(d.status)) {
-      stopPolling(); updateHistory(id, 'failed'); showError(d.message || 'Render gagal di server.'); return;
-    }
+    badCount = 0;
     const url = extractUrl(d);
     if (url) {
       stopPolling(); updateHistory(id, 'completed'); showDone(d, url); toast('Render selesai.', 'success'); return;
     }
-    if (['processing', 'pending', 'rendering'].includes(d.status)) { if (!$('flash').hidden || !$('status').className.includes('ok')) fillMeta({ ...d, job_id: id }); }
+    if (['processing', 'pending', 'rendering', 'queued'].includes(d.status)) { if (curState === 'proc') $('status-t').textContent = 'Sedang dirender'; if (!$('flash').hidden || !$('status').className.includes('ok')) fillMeta({ ...d, job_id: id }); }
     else if (!silent) toast('Masih diproses.');
   } catch (e) {
     if (!silent) toast('Gagal mengecek status: ' + e.message, 'error');
@@ -543,7 +555,7 @@ async function copyText(t) {
 }
 
 
-let prevT = null, curState = 'empty', popFrom = Infinity;
+let prevT = null, curState = 'empty', popFrom = Infinity, badCount = 0;
 const reduce = () => matchMedia('(prefers-reduced-motion:reduce)').matches;
 function setSteps(i) { [...$('steps').children].forEach((li, j) => { li.className = j < i ? 'done' : j === i ? 'on' : ''; }); }
 function updatePreview() {
@@ -578,7 +590,9 @@ async function loadSamples() {
   if (!ok.length) return toast('Gagal membuat foto contoh.', 'error');
   addFiles(ok); toast(`${ok.length} foto contoh ditambahkan.`, 'success');
 }
+function copyMeta(id) { const v = $(id).textContent.trim(); if (!v || v === '-') return toast('Belum ada data untuk disalin.', 'error'); copyText(v); }
 function shareResult() { if (resultUrl && navigator.share) navigator.share({ title: 'Video JJ', url: resultUrl }).catch(() => {}); }
+document.addEventListener('visibilitychange', () => { if (!document.hidden && poll && currentJobId) checkJob(currentJobId, true); });
 $('video').addEventListener('error', () => { if (!$('video').hidden) toast('Video tidak bisa diputar di sini. Pakai tombol Unduh.', 'error'); });
 addEventListener('error', e => toast('Error skrip: ' + e.message, 'error'));
 renderHistory(); renderStrip(); stage('empty');
