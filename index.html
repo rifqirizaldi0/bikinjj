@@ -25,7 +25,7 @@ svg{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:2;stroke-lin
 header{background:#fff;border-bottom:1px solid var(--ink);padding-top:env(safe-area-inset-top)}
 .bar{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:58px}
 .brand{display:flex;align-items:center;gap:10px;min-width:0;flex:1}
-.brand img{height:30px;width:auto;max-width:110px;object-fit:contain;flex:none}
+.brand img{height:50px;width:auto;max-width:110px;object-fit:contain;flex:none}
 .brand b{font-size:1.05rem;font-weight:800;font-stretch:115%;letter-spacing:-.01em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
 .ghost{flex:none;display:inline-flex;align-items:center;gap:8px;padding:8px 13px;border:1px solid var(--ink);border-radius:6px;font-size:.86rem;font-weight:600;white-space:nowrap;transition:background .12s}
 .ghost:hover{background:var(--bg)}
@@ -348,7 +348,7 @@ tpl.oninput = renderStrip;
 function sampleTpl() { tpl.value = '7649585745329540360'; renderStrip(); toast('Contoh Template ID (1 slot) diisi.'); }
 
 // drag & drop file dari luar
-const zone = document.querySelector('.card');
+const zone = document.querySelector('.panel') || document.body;
 ['dragenter', 'dragover'].forEach(ev => zone.addEventListener(ev, e => { if (dragFrom === null && e.dataTransfer?.types?.includes('Files')) { e.preventDefault(); empty.classList.add('hot'); } }));
 ['dragleave', 'drop'].forEach(ev => zone.addEventListener(ev, () => empty.classList.remove('hot')));
 zone.addEventListener('drop', e => { if (dragFrom === null && e.dataTransfer?.files?.length) { e.preventDefault(); addFiles(e.dataTransfer.files); } });
