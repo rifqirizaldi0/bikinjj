@@ -4,146 +4,140 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>JJ CapCut Generator</title>
-<meta name="theme-color" content="#14152b">
+<meta name="theme-color" content="#e9ebef">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,700;12..96,800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&display=swap" rel="stylesheet">
 <style>
-:root{
-  --bg:#e8eaf3; --surface:#fff; --ink:#14152b; --muted:#5d6080; --line:#d3d6e6;
-  --blue:#3a36f0; --blue-d:#2824c4; --flash:#ffd83d; --ok:#0f8a5f; --bad:#c9304a;
-  --f:'Bricolage Grotesque',system-ui,-apple-system,'Segoe UI',sans-serif;
-}
+:root{--bg:#e9ebef;--ink:#1b1d24;--muted:#636878;--line:#cdd1da;--pink:#e5007d;--pink-d:#bd006a;--cyan:#00a7c7;--ok:#12805c;--bad:#c62828;--f:'Archivo',system-ui,-apple-system,'Segoe UI',sans-serif}
 *{box-sizing:border-box;margin:0}
-html{color-scheme:light}
-body{font-family:var(--f);background:var(--bg);color:var(--ink);min-height:100vh;line-height:1.5;-webkit-font-smoothing:antialiased}
+html{color-scheme:light;-webkit-text-size-adjust:100%}
+body{font-family:var(--f);background:var(--bg);color:var(--ink);min-height:100vh;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 button,input{font:inherit;color:inherit}
 button{cursor:pointer;border:0;background:none}
-:focus-visible{outline:3px solid var(--blue);outline-offset:2px;border-radius:6px}
-.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+:focus-visible{outline:3px solid var(--cyan);outline-offset:2px;border-radius:4px}
+[hidden]{display:none!important}
+.wrap{max-width:1100px;margin:0 auto;padding:0 20px}
 svg{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.sub,.hint{font-size:.84rem;color:var(--muted)}
+.hint{margin-top:12px}
 
-/* header */
-header{background:var(--ink);color:#fff}
-header .wrap{display:flex;align-items:center;justify-content:space-between;height:64px;gap:12px}
-.brand{display:flex;align-items:center;gap:12px;min-width:0}
-.brand img{height:34px;width:auto;display:block}
-.brand b{font-weight:800;font-size:1.15rem;letter-spacing:-.02em;white-space:nowrap}
-.ghost{display:inline-flex;align-items:center;gap:8px;padding:9px 14px;border-radius:10px;border:1px solid #ffffff33;font-size:.875rem;font-weight:500;transition:background .15s}
-.ghost:hover{background:#ffffff1a}
+header{background:#fff;border-bottom:1px solid var(--ink);padding-top:env(safe-area-inset-top)}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:58px}
+.brand{display:flex;align-items:center;gap:10px;min-width:0;flex:1}
+.brand img{height:30px;width:auto;max-width:110px;object-fit:contain;flex:none}
+.brand b{font-size:1.05rem;font-weight:800;font-stretch:115%;letter-spacing:-.01em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.ghost{flex:none;display:inline-flex;align-items:center;gap:8px;padding:8px 13px;border:1px solid var(--ink);border-radius:6px;font-size:.86rem;font-weight:600;white-space:nowrap;transition:background .12s}
+.ghost:hover{background:var(--bg)}
+@media(max-width:420px){.ghost span{display:none}.ghost{padding:9px}.wrap{padding:0 14px}}
 
-/* intro */
-.intro{padding:36px 0 22px}
-.intro h1{font-size:clamp(1.9rem,5.5vw,3.4rem);font-weight:800;line-height:1.02;letter-spacing:-.035em;max-width:16ch}
-.intro p{color:var(--muted);margin-top:12px;max-width:52ch}
+.lead{padding:26px 0 18px}
+.lead h1{font-size:clamp(1.7rem,5vw,2.6rem);font-weight:800;font-stretch:122%;line-height:1.05;letter-spacing:-.025em}
+.lead p{color:var(--muted);margin-top:8px;max-width:50ch}
 
-.grid{display:grid;gap:20px;grid-template-columns:1fr;padding-bottom:120px;align-items:start}
-@media(min-width:900px){.grid{grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);padding-bottom:56px}}
-.card{background:var(--surface);border-radius:20px;padding:22px;border:1px solid var(--line)}
-.card h2{font-size:1.1rem;font-weight:700;letter-spacing:-.01em}
-.sub{font-size:.85rem;color:var(--muted)}
-.row{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:16px;flex-wrap:wrap}
-.count{font-weight:700;font-size:.9rem;background:var(--bg);padding:3px 10px;border-radius:99px}
+.grid{display:grid;gap:16px;grid-template-columns:minmax(0,1fr);align-items:start}
+.col{display:grid;gap:16px;min-width:0}
+@media(min-width:900px){.grid{grid-template-columns:minmax(0,1.2fr) minmax(0,1fr)}.stage{position:sticky;top:16px}}
+.panel{background:#fff;border:1px solid var(--ink);border-radius:8px;overflow:hidden;min-width:0}
+.ph{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 16px;border-bottom:1px solid var(--ink);background:#f6f7f9;font-weight:700;font-stretch:112%;font-size:.95rem}
+.pb{padding:16px}
+.count{font-size:.8rem;font-weight:700;background:var(--ink);color:#fff;padding:2px 9px;border-radius:4px}
 
-/* filmstrip */
-.strip{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:10px}
-.frame{position:relative;aspect-ratio:9/16;border-radius:10px;overflow:hidden;background:var(--ink);cursor:grab}
-.frame.drag{opacity:.4}
-.frame.over{outline:3px solid var(--flash)}
+.drop-empty{display:block;width:100%;border:2px dashed #aab0c0;border-radius:6px;padding:38px 18px;text-align:center;transition:background .12s,border-color .12s}
+.drop-empty:hover,.drop-empty.hot{border-color:var(--pink);background:#e5007d0d}
+.drop-empty svg{font-size:1.9rem;color:var(--pink)}
+.drop-empty strong{display:block;font-size:1.1rem;margin-top:6px;font-stretch:110%}
+.strip{display:flex;gap:8px;overflow-x:auto;padding-bottom:10px;scroll-snap-type:x proximity}
+.frame,.add{flex:none;width:92px;aspect-ratio:9/16;border-radius:6px;scroll-snap-align:start}
+.frame{position:relative;overflow:hidden;background:var(--ink);cursor:grab;border:1px solid var(--ink)}
+.frame.drag{opacity:.4}.frame.over{outline:3px solid var(--pink)}
 .frame img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
-.frame .n{position:absolute;left:6px;top:6px;background:var(--flash);color:var(--ink);font-weight:800;font-size:.75rem;min-width:22px;height:22px;display:grid;place-items:center;border-radius:6px}
-.frame .tools{position:absolute;inset:auto 0 0 0;display:flex;justify-content:space-between;padding:6px;background:linear-gradient(transparent,#000a)}
-.frame .tools button{width:28px;height:28px;border-radius:8px;background:#ffffffe6;color:var(--ink);display:grid;place-items:center;font-size:.9rem}
+.frame .n{position:absolute;left:5px;top:5px;background:var(--pink);color:#fff;font-weight:800;font-size:.72rem;min-width:20px;height:20px;display:grid;place-items:center;border-radius:4px}
+.frame .tools{position:absolute;inset:auto 0 0 0;display:flex;justify-content:space-between;gap:2px;padding:4px;background:linear-gradient(transparent,#000b)}
+.frame .tools button{width:24px;height:24px;border-radius:5px;background:#fff;color:var(--ink);display:grid;place-items:center;font-size:.8rem}
 .frame .tools button.x{background:var(--bad);color:#fff}
 .frame .tools button:disabled{opacity:.35;cursor:default}
-.add{aspect-ratio:9/16;border-radius:10px;border:2px dashed #9aa0c8;display:grid;place-items:center;text-align:center;padding:8px;color:var(--blue);font-weight:700;font-size:.85rem;transition:background .15s,border-color .15s}
-.add:hover,.add.hot{background:#3a36f014;border-color:var(--blue)}
-.add svg{font-size:1.6rem;display:block;margin:0 auto 6px}
-.drop-empty{display:block;width:100%;border:2px dashed #9aa0c8;border-radius:16px;padding:44px 20px;text-align:center;transition:background .15s,border-color .15s}
-.drop-empty:hover,.drop-empty.hot{background:#3a36f014;border-color:var(--blue)}
-.drop-empty svg{font-size:2rem;color:var(--blue)}
-.drop-empty strong{display:block;font-size:1.15rem;margin-top:8px}
-.hint{font-size:.8rem;color:var(--muted);margin-top:12px}
+.frame.pop{animation:pop .25s ease-out}
+@keyframes pop{from{transform:scale(.8);opacity:0}}
+.add{border:2px dashed #aab0c0;display:grid;place-items:center;text-align:center;padding:6px;color:var(--pink);font-weight:700;font-size:.8rem}
+.add:hover{border-color:var(--pink);background:#e5007d0d}
+.add svg{font-size:1.4rem;display:block;margin:0 auto 4px}
 
-details{margin-top:20px;border-top:1px solid var(--line);padding-top:16px}
-summary{font-weight:600;cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between}
-summary::-webkit-details-marker{display:none}
-summary svg{transition:transform .2s}
-details[open] summary svg{transform:rotate(180deg)}
-.field{display:flex;gap:8px;margin-top:12px}
-.field input{flex:1;min-width:0;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;background:#fff;font-family:ui-monospace,Menlo,monospace;font-size:.9rem}
-.field input:focus{border-color:var(--blue);outline:0;box-shadow:0 0 0 3px #3a36f033}
-.link{color:var(--blue);font-weight:600;font-size:.85rem;padding:0 4px}
+.field{display:flex;gap:8px;align-items:center}
+.field input{flex:1;min-width:0;padding:11px 13px;border:1px solid var(--ink);border-radius:6px;background:#fff;font-size:.95rem}
+.field input:focus{outline:3px solid #00a7c755;border-color:var(--cyan)}
+.link{color:var(--pink);font-weight:700;font-size:.86rem;padding:0 4px;white-space:nowrap}
 .link:hover{text-decoration:underline}
 
-/* dock */
-.dock{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--ink);color:#fff;padding:12px 20px calc(12px + env(safe-area-inset-bottom));display:flex;align-items:center;gap:14px;justify-content:space-between}
-.dock .info{font-size:.85rem;line-height:1.3;min-width:0}
-.dock .info b{display:block;font-size:1rem}
-.go{display:inline-flex;align-items:center;gap:10px;background:var(--flash);color:var(--ink);font-weight:800;font-size:1rem;padding:13px 22px;border-radius:14px;transition:transform .1s,background .15s;white-space:nowrap}
-.go:hover:not(:disabled){background:#ffe36e}
+.dock{position:fixed;left:0;right:0;bottom:0;z-index:20;background:#fff;border-top:1px solid var(--ink);padding:10px max(16px,env(safe-area-inset-right)) calc(10px + env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left));display:flex;align-items:center;gap:12px;justify-content:space-between}
+.dock .info{min-width:0;flex:1;font-size:.82rem;line-height:1.3;color:var(--muted)}
+.dock .info b{display:block;color:var(--ink);font-size:1rem}
+.dock .info span{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.go{flex:none;display:inline-flex;align-items:center;gap:9px;background:var(--pink);color:#fff;font-weight:800;font-size:1rem;padding:13px 22px;border-radius:8px;white-space:nowrap;transition:background .12s,transform .1s}
+.go:hover:not(:disabled){background:var(--pink-d)}
 .go:active:not(:disabled){transform:scale(.97)}
-.go:disabled{opacity:.45;cursor:not-allowed}
-@media(min-width:900px){
-  .dock{position:static;background:none;color:var(--ink);padding:18px 0 0}
-  .dock .info{color:var(--muted)}
-  .dock .info b{color:var(--ink)}
-  .go{background:var(--blue);color:#fff;padding:14px 26px}
-  .go:hover:not(:disabled){background:var(--blue-d)}
-}
+.go:disabled{opacity:.4;cursor:not-allowed}
+@media(max-width:380px){.go{padding:12px 16px;font-size:.95rem}.go svg{display:none}}
+@media(min-width:900px){.dock{position:static;border:1px solid var(--ink);border-radius:8px;padding:12px 16px}.go{padding:13px 26px}}
+main{padding-bottom:120px}
+@media(min-width:900px){main{padding-bottom:48px}}
 
-/* result */
-.side{display:grid;gap:20px}
-@media(min-width:900px){.stage-card{position:sticky;top:20px}}
-.phone{position:relative;width:min(100%,260px);margin:0 auto;aspect-ratio:9/16;border-radius:26px;overflow:hidden;background:var(--ink);border:6px solid var(--ink);box-shadow:0 0 0 1px var(--line)}
+.phone{position:relative;width:min(100%,250px);margin:0 auto;aspect-ratio:9/16;border-radius:18px;overflow:hidden;background:var(--ink);border:4px solid var(--ink)}
 .phone>*{position:absolute;inset:0;width:100%;height:100%}
 .phone video,.phone img{object-fit:cover}
-.msg{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#c9ccea;padding:22px;gap:8px;font-size:.9rem}
-.msg svg{font-size:2rem;color:var(--flash)}
+.msg{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#c7cbe0;padding:20px;gap:8px;font-size:.88rem}
+.msg svg{font-size:1.9rem;color:var(--pink)}
 .msg b{color:#fff;font-size:1rem}
-.flash{background:#fff;opacity:0;pointer-events:none}
+.flash{z-index:3;background:#fff;opacity:0;pointer-events:none}
 .flash.on{animation:fl .16s ease-out}
 @keyframes fl{from{opacity:.75}to{opacity:0}}
-.timer{position:absolute;left:10px;bottom:10px;top:auto;inset:auto;width:auto;height:auto;background:#000a;color:#fff;font-variant-numeric:tabular-nums;font-size:.8rem;font-weight:700;padding:3px 9px;border-radius:99px}
-[hidden]{display:none!important}
-.meta{margin-top:18px;display:grid;gap:8px;font-size:.88rem}
+.phone.boom{animation:boom .45s}.phone.boom .flash.on{animation-duration:.45s}
+@keyframes boom{30%{transform:scale(1.04)}}
+.timer{position:absolute;inset:auto auto 8px 8px;width:auto;height:auto;background:#000b;color:#fff;font-variant-numeric:tabular-nums;font-size:.76rem;font-weight:700;padding:2px 8px;border-radius:4px}
+.status{display:inline-flex;align-items:center;gap:8px;font-weight:700;margin-top:16px}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--pink);animation:pu 1.2s infinite}
+.status.ok .dot{background:var(--ok);animation:none}.status.bad .dot{background:var(--bad);animation:none}
+@keyframes pu{50%{opacity:.3}}
+.steps{display:flex;gap:6px;list-style:none;padding:0;margin:12px 0 0}
+.steps li{flex:1;border-top:4px solid var(--line);padding-top:5px;font-size:.78rem;color:var(--muted)}
+.steps li.done{border-color:var(--ok);color:var(--ink)}.steps li.on{border-color:var(--pink);color:var(--ink);font-weight:700}
+.meta{margin-top:14px;display:grid;gap:6px;font-size:.86rem}
 .meta div{display:flex;justify-content:space-between;gap:12px}
 .meta span:first-child{color:var(--muted)}
-.meta a{color:var(--blue);font-weight:600;word-break:break-all;text-align:right}
-.status{display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:.95rem;margin-top:18px}
-.dot{width:10px;height:10px;border-radius:50%;background:var(--flash);box-shadow:0 0 0 0 #ffd83d99;animation:pu 1.2s infinite}
-.status.ok .dot{background:var(--ok);animation:none}
-.status.bad .dot{background:var(--bad);animation:none}
-@keyframes pu{70%{box-shadow:0 0 0 9px #ffd83d00}100%{box-shadow:0 0 0 0 #ffd83d00}}
-.btns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
-.btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;border-radius:12px;font-weight:700;font-size:.9rem;border:1.5px solid var(--line);background:#fff;transition:background .15s}
-.btn:hover{background:var(--bg)}
-.btn.main{background:var(--blue);border-color:var(--blue);color:#fff}
-.btn.main:hover{background:var(--blue-d)}
+.meta a{color:var(--pink);font-weight:700;word-break:break-all;text-align:right}
+.btns{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:11px;border-radius:6px;font-weight:700;font-size:.9rem;border:1px solid var(--ink);background:#fff;transition:background .12s,transform .1s}
+.btn:hover{background:var(--bg)}.btn:active{transform:scale(.97)}
+.btn.main{background:var(--ink);color:#fff}.btn.main:hover{background:#000}
 .note{font-size:.8rem;color:var(--muted);margin-top:12px}
-.errtext{color:var(--bad);font-size:.9rem;margin-top:8px}
-.raw{margin-top:16px;font-size:.8rem}
-.raw pre{margin-top:8px;padding:12px;background:var(--ink);color:#b9f5d8;border-radius:12px;overflow:auto;max-height:200px;font-size:.75rem}
+.raw{margin-top:14px;font-size:.8rem}
+.raw pre{margin-top:8px;padding:12px;background:var(--ink);color:#b9f5d8;border-radius:6px;overflow:auto;max-height:200px;font-size:.75rem}
 
-/* history */
-.hist{display:grid;gap:8px;margin-top:4px}
-.hi{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;text-align:left;padding:11px 14px;border-radius:12px;border:1px solid var(--line);transition:border-color .15s,background .15s}
-.hi:hover{border-color:var(--blue);background:#3a36f00a}
-.hi b{display:block;font-family:ui-monospace,Menlo,monospace;font-size:.82rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hist{display:grid;gap:8px}
+.hi{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;text-align:left;padding:9px 12px;border-radius:6px;border:1px solid var(--line);transition:border-color .12s}
+.hi:hover{border-color:var(--ink)}
+.hi img{width:30px;height:54px;object-fit:cover;border-radius:4px;flex:none}
+.hi b{display:block;font-size:.85rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .hi small{color:var(--muted);font-size:.78rem}
-.tag{font-size:.75rem;font-weight:700;padding:3px 9px;border-radius:99px;white-space:nowrap;background:#ffd83d55}
-.tag.completed{background:#0f8a5f22;color:var(--ok)}
-.tag.failed,.tag.expired{background:#c9304a1f;color:var(--bad)}
+.tag{font-size:.74rem;font-weight:700;padding:2px 8px;border-radius:4px;white-space:nowrap;background:#e5007d1f;color:var(--pink-d)}
+.tag.completed{background:#12805c1f;color:var(--ok)}.tag.failed,.tag.expired{background:#c628281f;color:var(--bad)}
 
-/* dialog + toast */
-dialog{border:0;border-radius:20px;padding:24px;width:min(92vw,420px);box-shadow:0 20px 60px #14152b55;background:#fff;color:var(--ink)}
-dialog::backdrop{background:#14152bb3}
-dialog h3{font-size:1.15rem;margin-bottom:6px}
-dialog input{width:100%;margin:14px 0;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;font-family:ui-monospace,Menlo,monospace}
-dialog input:focus{border-color:var(--blue);outline:0;box-shadow:0 0 0 3px #3a36f033}
+.faq{margin-top:16px}
+.faq details{border-bottom:1px solid var(--line);padding:0 16px}
+.faq details:last-child{border:0}
+.faq summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:10px;padding:14px 0;font-weight:600}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary svg{transition:transform .2s}.faq details[open] summary svg{transform:rotate(180deg)}
+.faq p{padding:0 0 14px;color:var(--muted);font-size:.92rem;max-width:62ch}
+
+dialog{border:1px solid var(--ink);border-radius:8px;padding:22px;width:min(92vw,420px);background:#fff;color:var(--ink)}
+dialog::backdrop{background:#1b1d24b3}
+dialog h3{font-size:1.1rem;margin-bottom:6px;font-stretch:110%}
+dialog input{width:100%;margin:14px 0;padding:11px 13px;border:1px solid var(--ink);border-radius:6px;background:#fff}
 .acts{display:flex;justify-content:flex-end;gap:8px}
-#toasts{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:60;display:grid;gap:8px;width:min(92vw,380px);pointer-events:none}
-.toast{background:var(--ink);color:#fff;padding:12px 16px;border-radius:12px;font-size:.88rem;font-weight:500;border-left:5px solid var(--flash);box-shadow:0 10px 30px #14152b44;animation:ti .2s ease-out}
+.acts .btn{padding:10px 16px}
+#toasts{position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:60;display:grid;gap:8px;width:min(92vw,380px);pointer-events:none}
+.toast{background:var(--ink);color:#fff;padding:11px 15px;border-radius:6px;font-size:.88rem;border-left:5px solid var(--cyan);animation:ti .2s ease-out}
 .toast.error{border-color:var(--bad)}.toast.success{border-color:#3ddc97}
 @keyframes ti{from{opacity:0;transform:translateY(-8px)}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
@@ -161,6 +155,8 @@ dialog input:focus{border-color:var(--blue);outline:0;box-shadow:0 0 0 3px #3a36
 <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></symbol>
 <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 3 5 14h6l-1 7 8-11h-6z"/></symbol>
 <symbol id="i-film" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M8 4v16M16 4v16M3 9h5M3 15h5M16 9h5M16 15h5"/></symbol>
+<symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></symbol>
+<symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
 <symbol id="i-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
 <symbol id="i-warn" viewBox="0 0 24 24"><path d="M12 8v5m0 4h.01M10.3 3.9 2.4 18a2 2 0 0 0 1.7 3h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></symbol>
 </defs></svg>
@@ -168,52 +164,44 @@ dialog input:focus{border-color:var(--blue);outline:0;box-shadow:0 0 0 3px #3a36
 <div id="toasts" role="status" aria-live="polite"></div>
 
 <header>
-  <div class="wrap">
-    <div class="brand">
-      <img src="logo.png" alt="" onerror="this.remove()">
-      <b>JJ CapCut Generator</b>
-    </div>
-    <button class="ghost" onclick="openCheck()"><svg><use href="#i-search"/></svg>Cek Job ID</button>
+  <div class="wrap bar">
+    <div class="brand"><img src="logo.png" alt="" onerror="this.remove()"><b>JJ CapCut Generator</b></div>
+    <button class="ghost" onclick="openCheck()" aria-label="Cek Job ID"><svg><use href="#i-search"/></svg><span>Cek Job ID</span></button>
   </div>
 </header>
 
 <main class="wrap">
-  <section class="intro">
-    <h1>Foto jadi video jedag-jedug.</h1>
-    <p>Pilih foto, atur urutannya, lalu generate. Setiap foto mengisi satu slot template dan berganti mengikuti beat.</p>
-  </section>
+  <div class="lead">
+    <h1>Foto jadi video jedag-jedug</h1>
+    <p>Susun foto di timeline, lalu generate. Satu foto mengisi satu slot template.</p>
+  </div>
 
   <div class="grid">
-    <!-- KIRI -->
-    <div>
-      <section class="card">
-        <div class="row">
-          <div>
-            <h2>Foto kamu</h2>
-            <p class="sub">JPG, PNG, atau WebP. Urutan di sini = urutan di video.</p>
-          </div>
-          <span class="count" id="count">0 foto</span>
+    <div class="col">
+      <section class="panel">
+        <div class="ph"><span>Timeline foto</span><span class="count" id="count">0 foto</span></div>
+        <div class="pb">
+          <input type="file" id="file" accept="image/jpeg,image/png,image/webp" multiple hidden>
+          <button type="button" class="drop-empty" id="empty" onclick="fileInput.click()">
+            <svg><use href="#i-up"/></svg>
+            <strong>Pilih foto</strong>
+            <span class="sub">atau seret dan lepas di sini</span>
+          </button>
+          <p class="hint" id="try" style="text-align:center">Cuma mau coba? <button type="button" class="link" onclick="loadSamples()">Pakai 5 foto contoh</button>. Foto vertikal dengan wajah dekat biasanya paling bagus.</p>
+          <div class="strip" id="strip" hidden></div>
+          <p class="hint" id="strip-hint" hidden>Seret foto atau pakai tombol panah untuk mengubah urutan. Geser ke samping kalau fotonya banyak.</p>
         </div>
+      </section>
 
-        <input type="file" id="file" accept="image/jpeg,image/png,image/webp" multiple hidden>
-
-        <button type="button" class="drop-empty" id="empty" onclick="file.click()">
-          <svg><use href="#i-up"/></svg>
-          <strong>Pilih foto</strong>
-          <span class="sub">atau seret dan lepas di sini</span>
-        </button>
-
-        <div class="strip" id="strip" hidden></div>
-        <p class="hint" id="strip-hint" hidden>Seret foto atau pakai tombol panah untuk mengubah urutan.</p>
-
-        <details>
-          <summary>Pakai template tertentu <svg><use href="#i-down"/></svg></summary>
+      <section class="panel">
+        <div class="ph"><span>Template</span><span class="sub" style="font-weight:400">opsional</span></div>
+        <div class="pb">
           <div class="field">
             <input type="text" id="tpl" inputmode="numeric" placeholder="Template ID" aria-label="Template ID" autocomplete="off">
             <button type="button" class="link" onclick="sampleTpl()">Isi contoh</button>
           </div>
-          <p class="hint">Jumlah foto harus sama dengan jumlah slot template. Kosongkan untuk template acak yang cocok dengan jumlah fotomu.</p>
-        </details>
+          <p class="hint">Kosongkan untuk template acak yang cocok dengan jumlah fotomu. Kalau diisi, jumlah foto harus sama dengan jumlah slot template.</p>
+        </div>
       </section>
 
       <div class="dock">
@@ -222,54 +210,63 @@ dialog input:focus{border-color:var(--blue);outline:0;box-shadow:0 0 0 3px #3a36
       </div>
     </div>
 
-    <!-- KANAN -->
-    <div class="side">
-      <section class="card stage-card" aria-live="polite">
-        <div class="phone" id="phone">
-          <div class="msg" id="s-empty"><svg><use href="#i-film"/></svg><b>Hasil muncul di sini</b>Video vertikal 9:16 siap diputar dan diunduh.</div>
-          <img id="s-flash-img" alt="" hidden>
-          <div class="flash" id="flash" hidden></div>
-          <span class="timer" id="timer" hidden>0:00</span>
-          <video id="video" controls playsinline hidden></video>
-          <div class="msg" id="s-error" hidden><svg><use href="#i-warn"/></svg><b>Render gagal</b><span id="err-t"></span></div>
-        </div>
+    <div class="col">
+      <section class="panel stage" aria-live="polite">
+        <div class="ph"><span>Pratinjau</span></div>
+        <div class="pb">
+          <div class="phone" id="phone">
+            <div class="msg" id="s-empty"><svg><use href="#i-film"/></svg><b>Hasil muncul di sini</b>Video vertikal 9:16 siap diputar dan diunduh.</div>
+            <img id="s-flash-img" alt="" hidden>
+            <div class="flash" id="flash" hidden></div>
+            <span class="timer" id="timer" hidden>0:00</span>
+            <span class="timer" id="prev-tag" hidden>Pratinjau urutan foto</span>
+            <video id="video" controls playsinline hidden></video>
+            <div class="msg" id="s-error" hidden><svg><use href="#i-warn"/></svg><b>Render gagal</b><span id="err-t"></span></div>
+          </div>
 
-        <div class="status" id="status" hidden><span class="dot"></span><span id="status-t"></span></div>
+          <div class="status" id="status" hidden><span class="dot"></span><span id="status-t"></span></div>
+          <ol class="steps" id="steps" hidden><li>Unggah</li><li>Render</li><li>Selesai</li></ol>
 
-        <div class="meta" id="meta" hidden>
-          <div><span>Template</span><span id="m-title">-</span></div>
-          <div><span>ID template</span><a id="m-link" href="#" target="_blank" rel="noopener noreferrer"><span id="m-id">-</span></a></div>
-          <div><span>Foto / slot</span><span id="m-slots">-</span></div>
-          <div><span>Job ID</span><span id="m-job" style="font-family:ui-monospace,monospace;font-size:.8rem">-</span></div>
-        </div>
+          <div class="meta" id="meta" hidden>
+            <div><span>Template</span><span id="m-title">-</span></div>
+            <div><span>ID template</span><a id="m-link" href="#" target="_blank" rel="noopener noreferrer"><span id="m-id">-</span></a></div>
+            <div><span>Foto / slot</span><span id="m-slots">-</span></div>
+            <div><span>Job ID</span><span id="m-job" style="font-size:.8rem">-</span></div>
+          </div>
 
-        <div class="btns" id="done-btns" hidden>
-          <a class="btn main" id="dl" href="#" target="_blank" rel="noopener" download="jj-capcut-result.mp4"><svg><use href="#i-dl"/></svg>Unduh</a>
-          <button class="btn" onclick="copyText(resultUrl)"><svg><use href="#i-link"/></svg>Salin tautan</button>
-        </div>
-        <div class="btns" id="proc-btns" hidden>
-          <button class="btn" onclick="manualCheck()">Cek sekarang</button>
-          <button class="btn" onclick="copyText(currentJobId)">Salin Job ID</button>
-        </div>
-        <button class="btn" id="reset-btn" style="width:100%;margin-top:10px" onclick="resetStage()" hidden>Tutup</button>
+          <div class="btns" id="done-btns" hidden>
+            <a class="btn main" id="dl" href="#" target="_blank" rel="noopener" download="jj-capcut-result.mp4"><svg><use href="#i-dl"/></svg>Unduh</a>
+            <button class="btn" onclick="copyText(resultUrl)"><svg><use href="#i-link"/></svg>Salin tautan</button>
+            <button class="btn" id="share-btn" style="grid-column:1/-1" onclick="shareResult()" hidden>Bagikan</button>
+          </div>
+          <div class="btns" id="proc-btns" hidden>
+            <button class="btn" onclick="manualCheck()">Cek sekarang</button>
+            <button class="btn" onclick="copyText(currentJobId)">Salin Job ID</button>
+          </div>
+          <button class="btn" id="reset-btn" style="width:100%;margin-top:10px" onclick="resetStage()" hidden>Tutup</button>
+          <p class="note" id="note" hidden>Tautan hasil punya masa berlaku terbatas. Unduh videonya sebelum kedaluwarsa.</p>
 
-        <p class="note" id="note" hidden>Tautan hasil punya masa berlaku terbatas. Unduh videonya sebelum kedaluwarsa.</p>
-
-        <div class="raw" id="raw" hidden>
-          <button class="link" style="padding:0" onclick="document.getElementById('raw-pre').hidden^=1">Lihat respons API</button>
-          <pre id="raw-pre" hidden></pre>
+          <div class="raw" id="raw" hidden>
+            <button class="link" style="padding:0" onclick="document.getElementById('raw-pre').hidden^=1">Lihat respons API</button>
+            <pre id="raw-pre" hidden></pre>
+          </div>
         </div>
       </section>
 
-      <section class="card">
-        <div class="row" style="margin-bottom:12px">
-          <h2>Riwayat</h2>
-          <button class="link" onclick="clearHistory()">Bersihkan</button>
-        </div>
-        <div class="hist" id="hist"></div>
+      <section class="panel">
+        <div class="ph"><span>Riwayat</span><button class="link" onclick="clearHistory()">Bersihkan</button></div>
+        <div class="pb"><div class="hist" id="hist"></div></div>
       </section>
     </div>
   </div>
+
+  <section class="panel faq">
+    <div class="ph"><span>Pertanyaan umum</span></div>
+    <details><summary>Berapa lama prosesnya? <svg><use href="#i-down"/></svg></summary><p>Tergantung antrean server. Halaman mengecek otomatis tiap 4 detik, jadi tidak perlu refresh.</p></details>
+    <details><summary>Kenapa jumlah foto harus sama dengan slot? <svg><use href="#i-down"/></svg></summary><p>Setiap slot template diisi satu foto. Kalau Template ID dikosongkan, template dipilih otomatis sesuai jumlah fotomu.</p></details>
+    <details><summary>Kenapa tautan videonya kedaluwarsa? <svg><use href="#i-down"/></svg></summary><p>Tautan hasil bertoken dan masa berlakunya terbatas. Unduh videonya begitu selesai.</p></details>
+    <details><summary>Untuk apa Job ID? <svg><use href="#i-down"/></svg></summary><p>Dengan Job ID kamu bisa mengambil ulang hasil lewat Cek Job ID, selama belum kedaluwarsa.</p></details>
+  </section>
 </main>
 
 <dialog id="check">
@@ -277,7 +274,7 @@ dialog input:focus{border-color:var(--blue);outline:0;box-shadow:0 0 0 3px #3a36
   <p class="sub">Masukkan Job ID untuk melihat status atau mengambil ulang video, misalnya <code>jj_b293ca008459f30e</code>.</p>
   <input id="manual" placeholder="jj_xxxxxxxxxxxxxxxx" autocomplete="off">
   <div class="acts">
-    <button class="btn" onclick="check.close()">Batal</button>
+    <button class="btn" onclick="checkDlg.close()">Batal</button>
     <button class="btn main" onclick="submitManual()">Periksa</button>
   </div>
 </dialog>
@@ -286,10 +283,10 @@ dialog input:focus{border-color:var(--blue);outline:0;box-shadow:0 0 0 3px #3a36
 const API = 'https://na-api-nue-api-e7bfd3f4.koyeb.app/api/downloader/jj';
 const POLL_MS = 4000, MAX_WAIT = 10 * 60 * 1000;
 const $ = id => document.getElementById(id);
-const file = $('file'), strip = $('strip'), empty = $('empty'), tpl = $('tpl'), go = $('go');
+const fileInput = $('file'), strip = $('strip'), empty = $('empty'), tpl = $('tpl'), go = $('go');
 let files = [], urls = new Map(), currentJobId = null, resultUrl = null, poll = null, tick = null, flashT = null, startAt = 0, dragFrom = null;
-let history = [];
-try { history = JSON.parse(localStorage.getItem('jj_capcut_history') || '[]'); } catch (e) {}
+let jobHistory = [];
+try { jobHistory = JSON.parse(localStorage.getItem('jj_capcut_history') || '[]'); } catch (e) {}
 
 function toast(msg, type = 'info') {
   const t = document.createElement('div');
@@ -301,6 +298,7 @@ const ico = n => `<svg><use href="#i-${n}"/></svg>`;
 
 /* ---------- Foto ---------- */
 function addFiles(list) {
+  popFrom = files.length;
   const ok = ['image/jpeg', 'image/png', 'image/webp'];
   let n = 0;
   [...list].forEach(f => {
@@ -323,7 +321,7 @@ function renderStrip() {
   strip.innerHTML = '';
   files.forEach((f, i) => {
     const d = document.createElement('div');
-    d.className = 'frame'; d.draggable = true;
+    d.className = 'frame' + (i >= popFrom ? ' pop' : ''); d.draggable = true;
     d.innerHTML = `<img src="${urlOf(f)}" alt="Foto ${i + 1}"><span class="n">${i + 1}</span>
       <div class="tools"><button type="button" aria-label="Geser ke kiri" ${i === 0 ? 'disabled' : ''}>${ico('l')}</button>
       <button type="button" class="x" aria-label="Hapus foto ${i + 1}">${ico('x')}</button>
@@ -340,11 +338,12 @@ function renderStrip() {
   if (n) {
     const a = document.createElement('button');
     a.type = 'button'; a.className = 'add'; a.innerHTML = ico('plus') + 'Tambah';
-    a.onclick = () => file.click();
+    a.onclick = () => fileInput.click();
     strip.appendChild(a);
   }
+  popFrom = Infinity; $('try').hidden = n > 0; updatePreview();
 }
-file.onchange = e => { addFiles(e.target.files); file.value = ''; };
+fileInput.onchange = e => { addFiles(e.target.files); fileInput.value = ''; };
 tpl.oninput = renderStrip;
 function sampleTpl() { tpl.value = '7649585745329540360'; renderStrip(); toast('Contoh Template ID (1 slot) diisi.'); }
 
@@ -367,7 +366,10 @@ function stage(state) {
   show('reset-btn', state === 'error');
   $('status').className = 'status' + (state === 'done' ? ' ok' : state === 'error' ? ' bad' : '');
   $('status-t').textContent = { proc: 'Sedang dirender', done: 'Video selesai', error: 'Gagal' }[state] || '';
+  curState = state;
   if (state !== 'proc') stopFlash();
+  const si = { proc: 1, done: 3 }[state]; $('steps').hidden = si === undefined; if (si !== undefined) setSteps(si);
+  if (state === 'empty') updatePreview(); else { clearInterval(prevT); $('prev-tag').hidden = true; }
   if (state === 'empty') $('raw').hidden = true;
 }
 function fillMeta(d) {
@@ -386,7 +388,9 @@ function showProcessing(d) {
 function showDone(d, url) {
   stage('done'); fillMeta(d); resultUrl = url;
   const v = $('video'); v.src = url; v.load();
-  $('dl').href = url;
+  $('dl').href = url; $('share-btn').hidden = !navigator.share;
+  const fl = $('flash'), ph = $('phone'); fl.hidden = false; fl.classList.remove('on'); void fl.offsetWidth; fl.classList.add('on'); ph.classList.add('boom');
+  setTimeout(() => { fl.hidden = true; ph.classList.remove('boom'); }, 600);
 }
 function showError(msg) { stage('error'); $('err-t').textContent = msg; }
 function resetStage() { stopPolling(); stage('empty'); }
@@ -419,9 +423,15 @@ function extractUrl(d) {
     (d.data && (d.data.url || d.data.video_url || d.data.result_url)) || null;
 }
 
+async function readJson(res) {
+  const t = await res.text();
+  try { return JSON.parse(t); }
+  catch (e) { return { success: false, status: res.status, message: `Server membalas bukan JSON (status ${res.status}).` }; }
+}
 async function submitJob() {
   if (!files.length) return toast('Tambahkan minimal 1 foto dulu.', 'error');
   stopPolling(); startAt = 0;
+  showProcessing({}); setSteps(0); $('status-t').textContent = 'Mengunggah foto';
   go.disabled = true; $('go-t').textContent = 'Mengunggah…';
   try {
     const fd = new FormData();
@@ -429,12 +439,12 @@ async function submitJob() {
     const id = tpl.value.trim();
     if (id) fd.append('template_id', id);
     const res = await fetch(API, { method: 'POST', body: fd });
-    const d = await res.json();
+    const d = await readJson(res);
     raw(d);
     if (!res.ok && !d.job_id) throw new Error(d.message || `Gagal membuat job (status ${res.status})`);
     if (!d.job_id) throw new Error(d.message || 'Server tidak mengembalikan job_id.');
     currentJobId = d.job_id;
-    saveHistory({ job_id: d.job_id, template_title: d.template?.title || 'Template JJ', template_id: d.template?.id || id || '-', photo_count: d.photo_count || files.length, status: d.status || 'processing' });
+    saveHistory({ thumb: await makeThumb(files[0]), job_id: d.job_id, template_title: d.template?.title || 'Template JJ', template_id: d.template?.id || id || '-', photo_count: d.photo_count || files.length, status: d.status || 'processing' });
     const url = extractUrl(d);
     if ((d.success === true || ['completed', 'done'].includes(d.status)) && url) {
       updateHistory(d.job_id, 'completed'); showDone(d, url); toast('Video langsung selesai.', 'success');
@@ -443,7 +453,8 @@ async function submitJob() {
       if (innerWidth < 900) $('phone').scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   } catch (e) {
-    showError(e.message || 'Tidak bisa terhubung ke server.'); toast(e.message || 'Terjadi kesalahan jaringan.', 'error');
+    const m = e instanceof TypeError ? 'Tidak bisa terhubung ke server API. Cek koneksi internet, atau server sedang tidak aktif / menolak akses (CORS).' : (e.message || 'Terjadi kesalahan.');
+    showError(m); toast(m, 'error');
   } finally {
     go.disabled = files.length === 0; $('go-t').textContent = 'Generate video';
   }
@@ -463,7 +474,7 @@ const manualCheck = () => currentJobId && (toast('Memeriksa status…'), checkJo
 async function checkJob(id, silent) {
   try {
     const res = await fetch(`${API}?id=${encodeURIComponent(id)}`);
-    const d = await res.json();
+    const d = await readJson(res);
     raw(d);
     if (res.status === 404 || (d.status === 404 && d.success === false)) {
       stopPolling(); updateHistory(id, 'expired'); showError(d.message || 'Job tidak ditemukan atau sudah kedaluwarsa.'); return;
@@ -483,35 +494,37 @@ async function checkJob(id, silent) {
 }
 
 /* ---------- Cek manual & riwayat ---------- */
-const check = $('check');
-function openCheck() { check.showModal(); $('manual').focus(); }
+const checkDlg = $('check');
+function openCheck() { checkDlg.showModal(); $('manual').focus(); }
 $('manual').addEventListener('keydown', e => e.key === 'Enter' && submitManual());
 function submitManual() {
   const v = $('manual').value.trim();
   if (!v) return toast('Masukkan Job ID dulu.', 'error');
-  check.close(); openJob(v);
+  checkDlg.close(); openJob(v);
 }
 function openJob(id) {
   stopPolling(); currentJobId = id; startAt = 0; resultUrl = null;
   showProcessing({ job_id: id }); checkJob(id, false); startPolling(id);
   if (innerWidth < 900) $('phone').scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
-function persist() { try { localStorage.setItem('jj_capcut_history', JSON.stringify(history)); } catch (e) {} renderHistory(); }
-function saveHistory(it) { history = history.filter(h => h.job_id !== it.job_id); history.unshift(it); history = history.slice(0, 10); persist(); }
-function updateHistory(id, s) { const h = history.find(x => x.job_id === id); if (h) { h.status = s; persist(); } }
-function clearHistory() { history = []; persist(); toast('Riwayat dibersihkan.'); }
+function persist() { try { localStorage.setItem('jj_capcut_history', JSON.stringify(jobHistory)); } catch (e) {} renderHistory(); }
+function saveHistory(it) { jobHistory = jobHistory.filter(h => h.job_id !== it.job_id); jobHistory.unshift(it); jobHistory = jobHistory.slice(0, 10); persist(); }
+function updateHistory(id, s) { const h = jobHistory.find(x => x.job_id === id); if (h) { h.status = s; persist(); } }
+function clearHistory() { jobHistory = []; persist(); toast('Riwayat dibersihkan.'); }
 function renderHistory() {
   const el = $('hist');
-  if (!history.length) { el.innerHTML = '<p class="sub">Job yang kamu buat akan tersimpan di sini.</p>'; return; }
+  if (!jobHistory.length) { el.innerHTML = '<p class="sub">Job yang kamu buat akan tersimpan di sini.</p>'; return; }
   const label = { completed: 'Selesai', failed: 'Gagal', expired: 'Kedaluwarsa' };
   el.innerHTML = '';
-  history.forEach(h => {
+  jobHistory.forEach(h => {
     const b = document.createElement('button');
     b.className = 'hi';
-    const l = document.createElement('div'); l.style.minWidth = 0;
+    const l = document.createElement('div'); l.style.cssText = 'min-width:0;display:flex;align-items:center;gap:10px';
     const t = document.createElement('b'); t.textContent = h.job_id;
     const s = document.createElement('small'); s.textContent = `${h.template_title || 'Template'} · ${h.photo_count} foto`;
-    l.append(t, s);
+    const tx = document.createElement('div'); tx.style.minWidth = '0'; tx.append(t, s);
+    if (h.thumb) { const im = new Image(); im.alt = ''; im.src = h.thumb; l.append(im); }
+    l.append(tx);
     const tag = document.createElement('span'); tag.className = 'tag ' + (h.status || ''); tag.textContent = label[h.status] || 'Proses';
     b.append(l, tag); b.onclick = () => openJob(h.job_id);
     el.appendChild(b);
@@ -529,6 +542,45 @@ async function copyText(t) {
   toast('Tersalin.', 'success');
 }
 
+
+let prevT = null, curState = 'empty', popFrom = Infinity;
+const reduce = () => matchMedia('(prefers-reduced-motion:reduce)').matches;
+function setSteps(i) { [...$('steps').children].forEach((li, j) => { li.className = j < i ? 'done' : j === i ? 'on' : ''; }); }
+function updatePreview() {
+  clearInterval(prevT); prevT = null;
+  const on = curState === 'empty' && files.length > 0;
+  $('s-flash-img').hidden = !on; $('prev-tag').hidden = !on;
+  $('s-empty').hidden = curState !== 'empty' || on;
+  if (!on) return;
+  const imgs = files.map(urlOf); let i = 0;
+  const step = () => { $('s-flash-img').src = imgs[i++ % imgs.length]; };
+  step(); prevT = setInterval(step, reduce() ? 1600 : 600);
+}
+function makeThumb(f) {
+  return new Promise(r => { try {
+    const im = new Image();
+    im.onload = () => { const c = document.createElement('canvas'); c.width = 60; c.height = 108; const x = c.getContext('2d'); const k = Math.max(60 / im.width, 108 / im.height), w = im.width * k, h = im.height * k; x.drawImage(im, (60 - w) / 2, (108 - h) / 2, w, h); r(c.toDataURL('image/jpeg', .6)); };
+    im.onerror = () => r(''); im.src = urlOf(f);
+  } catch (e) { r(''); } });
+}
+async function loadSamples() {
+  const cols = [['#3a36f0', '#ff4fa3'], ['#ffd83d', '#ff7a45'], ['#12b886', '#3a36f0'], ['#ff4fa3', '#14152b'], ['#14152b', '#3a36f0']];
+  const out = await Promise.all(cols.map((c, i) => new Promise(r => {
+    const cv = document.createElement('canvas'); cv.width = 720; cv.height = 1280;
+    const x = cv.getContext('2d'), g = x.createLinearGradient(0, 0, 720, 1280);
+    g.addColorStop(0, c[0]); g.addColorStop(1, c[1]); x.fillStyle = g; x.fillRect(0, 0, 720, 1280);
+    x.fillStyle = '#fff'; x.textAlign = 'center';
+    x.font = '800 420px system-ui,sans-serif'; x.fillText(String(i + 1), 360, 760);
+    x.font = '700 44px system-ui,sans-serif'; x.fillText('Foto contoh', 360, 900);
+    cv.toBlob(b => r(b ? new File([b], `contoh-${i + 1}.jpg`, { type: 'image/jpeg' }) : null), 'image/jpeg', .85);
+  })));
+  const ok = out.filter(Boolean);
+  if (!ok.length) return toast('Gagal membuat foto contoh.', 'error');
+  addFiles(ok); toast(`${ok.length} foto contoh ditambahkan.`, 'success');
+}
+function shareResult() { if (resultUrl && navigator.share) navigator.share({ title: 'Video JJ', url: resultUrl }).catch(() => {}); }
+$('video').addEventListener('error', () => { if (!$('video').hidden) toast('Video tidak bisa diputar di sini. Pakai tombol Unduh.', 'error'); });
+addEventListener('error', e => toast('Error skrip: ' + e.message, 'error'));
 renderHistory(); renderStrip(); stage('empty');
 </script>
 </body>
